@@ -3,3 +3,13 @@
 
 # ignore .vscode configuration
 .vscode/
+
+# ignore IntelliJ configuration
+.idea/
+
+# ignore Visual Studio configuration
+.vs/
+obj/
+sln/
+*.sln
+*.njsproj
