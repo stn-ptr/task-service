@@ -2,6 +2,12 @@
 
 var http = require('http');
 
+let configFile = getConfigFile(process.argv); 
+
+console.log(configFile);
+
+process.exit(0);
+
 http.createServer((req, res) => {
 	
 	var header=req.headers['authorization']||'';
@@ -22,3 +28,15 @@ http.createServer((req, res) => {
    		res.end('Username: ' + username + '; Password: '+ password);
    	}
 }).listen(1337);
+
+function getConfigFile(args) {
+
+	const configParam = '--ConfigurationFile=';
+	let configFile = undefined;
+	args.forEach((arg) => {
+		configFile = arg.startsWith(configParam) 
+		? arg.slice(configParam.length) 
+		: configFile;
+	})
+	return configFile;
+}
