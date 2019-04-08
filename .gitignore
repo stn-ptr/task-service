@@ -10,6 +10,6 @@
 # ignore Visual Studio configuration
 .vs/
 obj/
-sln/
+bin/
 *.sln
 *.njsproj
