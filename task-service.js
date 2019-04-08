@@ -1,12 +1,28 @@
 'use strict';
 
 var http = require('http');
+const fs = require('fs');
+
+const configFileOptions = { encoding: 'utf8' };
 
 let configFile = getConfigFile(process.argv); 
 
-console.log(configFile);
+let config = undefined;
 
-process.exit(0);
+if (configFile) {
+    fs.exists(configFile, exists => {
+        if (!exists) {
+            process.exit(1);
+        }
+    });
+
+    const fileContents = fs.readFileSync(configFile, configFileOptions);
+    config = JSON.parse(fileContents);
+} else {
+    process.exit(1);
+}
+
+console.log(config);
 
 http.createServer((req, res) => {
 	
