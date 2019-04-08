@@ -1,6 +1,6 @@
 'use strict';
 
-var http = require('http');
+var https = require('https');
 const fs = require('fs');
 
 const configFileOptions = { encoding: 'utf8' };
@@ -22,9 +22,12 @@ if (configFile) {
     process.exit(1);
 }
 
-console.log(config);
+const httpOptions = {
+    key: fs.readFileSync(config.HttpsOptions.key),
+    cert: fs.readFileSync(config.HttpsOptions.cert)
+};
 
-http.createServer((req, res) => {
+https.createServer(httpOptions, (req, res) => {
 	
 	var header=req.headers['authorization']||'';
 	
