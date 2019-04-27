@@ -1,33 +1,33 @@
 'use strict';
 
 var https = require('https');
-const fs = require('fs');
+var fs = require('fs');
 
-const configFileOptions = { encoding: 'utf8' };
+var configFileOptions = { encoding: 'utf8' };
 
-let configFile = getConfigFile(process.argv); 
+var configFile = getConfigFile(process.argv); 
 
-let config = undefined;
+var config = undefined;
 
 if (configFile) {
-    fs.exists(configFile, exists => {
+    fs.exists(configFile, function(exists) {
         if (!exists) {
             process.exit(1);
         }
     });
 
-    const fileContents = fs.readFileSync(configFile, configFileOptions);
+    var fileContents = fs.readFileSync(configFile, configFileOptions);
     config = JSON.parse(fileContents);
 } else {
     process.exit(1);
 }
 
-const httpOptions = {
+var httpOptions = {
     key: fs.readFileSync(config.HttpsOptions.key),
     cert: fs.readFileSync(config.HttpsOptions.cert)
 };
 
-https.createServer(httpOptions, (req, res) => {
+https.createServer(function (req, res) {
 	
 	var header=req.headers['authorization']||'';
 	
@@ -50,11 +50,11 @@ https.createServer(httpOptions, (req, res) => {
 
 function getConfigFile(args) {
 
-	const configParam = '--ConfigurationFile=';
-	let configFile = undefined;
-	args.forEach((arg) => {
-		configFile = arg.startsWith(configParam) 
-		? arg.slice(configParam.length) 
+	var configParam = '/--ConfigurationFile=/';
+	var configFile = undefined;
+	args.forEach(function(arg) {
+		configFile = arg.search(configParam) 
+		? arg.slice(configParam.length - 2) 
 		: configFile;
 	})
 	return configFile;
