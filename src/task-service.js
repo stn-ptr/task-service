@@ -27,7 +27,7 @@ var httpOptions = {
     cert: fs.readFileSync(config.HttpsOptions.cert)
 };
 
-https.createServer(function (req, res) {
+https.createServer(httpOptions, function (req, res) {
 	
 	var header=req.headers['authorization']||'';
 	
