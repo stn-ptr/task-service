@@ -1,5 +1,7 @@
 # ignore certificates
 *.pem
+*.key
+*.cert
 
 # ignore .vscode configuration
 .vscode/
