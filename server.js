@@ -1,13 +1,13 @@
 'use strict';
 
-var https = require('https');
-var fs = require('fs');
+const https = require('https');
+const fs = require('fs');
 
-var configFileOptions = { encoding: 'utf8' };
+const configFileOptions = {encoding: 'utf8'};
 
-var configFile = getConfigFile(process.argv); 
+const configFile = getConfigFile(process.argv);
 
-var config = undefined;
+let config = undefined;
 
 if (configFile) {
     fs.exists(configFile, function(exists) {
@@ -16,31 +16,31 @@ if (configFile) {
         }
     });
 
-    var fileContents = fs.readFileSync(configFile, configFileOptions);
-    config = JSON.parse(fileContents);
+	const fileContents = fs.readFileSync(configFile, configFileOptions);
+	config = JSON.parse(fileContents);
 } else {
     process.exit(1);
 }
 
-var httpOptions = {
-    key: fs.readFileSync(config.HttpsOptions.key),
-    cert: fs.readFileSync(config.HttpsOptions.cert)
+const httpOptions = {
+	key: fs.readFileSync(config.HttpsOptions.key),
+	cert: fs.readFileSync(config.HttpsOptions.cert)
 };
 
 https.createServer(httpOptions, function (req, res) {
-	
-	var header=req.headers['authorization']||'';
-	
+
+	const header = req.headers['authorization'] || '';
+
 	if (header.length === 0) {
 		res.statusCode = 401;
 		res.setHeader('WWW-Authenticate', 'Basic realm="task-service"');
 		res.end('Access denied');
 	} else {
-		var	token = header.split(/\s+/).pop() || '';
-		var auth = new Buffer(token, 'base64').toString();
-		var parts = auth.split(/:/);
-		var username = parts[0];
-		var password = parts[1];
+		const token = header.split(/\s+/).pop() || '';
+		const auth = new Buffer(token, 'base64').toString();
+		const parts = auth.split(/:/);
+		const username = parts[0];
+		const password = parts[1];
 
 		res.writeHead(200, { 'Content-Type': 'text/plain' });
    		res.end('Username: ' + username + '; Password: '+ password);
@@ -49,8 +49,8 @@ https.createServer(httpOptions, function (req, res) {
 
 function getConfigFile(args) {
 
-	var configParam = '/--ConfigurationFile=/';
-	var configFile = undefined;
+	const configParam = '/--ConfigurationFile=/';
+	let configFile = undefined;
 	args.forEach(function(arg) {
 		configFile = arg.search(configParam) 
 		? arg.slice(configParam.length - 2) 
