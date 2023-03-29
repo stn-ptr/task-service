@@ -23,13 +23,12 @@ if (configFile) {
 }
 
 let httpOptions;
-if (
-  config?.HttpsOptions?.key !== undefined &&
-  config?.HttpsOptions?.cert !== undefined
-) {
+if (config !== undefined && config['HttpsOptions'] !== undefined) {
+  const keyFileName = config.HttpsOptions.key;
+  const certFileName = config.HttpsOptions.cert;
   httpOptions = {
-    key: fs.readFileSync(config.HttpsOptions.key),
-    cert: fs.readFileSync(config.HttpsOptions.cert),
+    key: fs.readFileSync(keyFileName),
+    cert: fs.readFileSync(certFileName),
   };
 } else {
   process.exit(1);
