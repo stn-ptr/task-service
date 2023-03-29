@@ -22,10 +22,17 @@ if (configFile) {
   process.exit(1);
 }
 
-const httpOptions = {
-  key: fs.readFileSync(config.HttpsOptions.key),
-  cert: fs.readFileSync(config.HttpsOptions.cert),
-};
+if (
+  config?.HttpsOptions?.key !== undefined &&
+  config?.HttpsOptions?.cert !== undefined
+) {
+  const httpOptions = {
+    key: fs.readFileSync(config.HttpsOptions.key),
+    cert: fs.readFileSync(config.HttpsOptions.cert),
+  };
+} else {
+  process.exit(1);
+}
 
 https
   .createServer(httpOptions, function (req, res) {
