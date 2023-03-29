@@ -52,9 +52,9 @@ function getConfigFile(args) {
 	const configParam = '/--ConfigurationFile=/';
 	let configFile = undefined;
 	args.forEach(function(arg) {
-		configFile = arg.search(configParam) 
+		configFile = arg.search(configParam) >= 0
 		? arg.slice(configParam.length - 2) 
 		: configFile;
-	})
+	});
 	return configFile;
 }
