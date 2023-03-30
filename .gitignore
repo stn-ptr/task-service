@@ -1,6 +1,7 @@
 # ignore certificates
 *.pem
 *.key
+*.crt
 *.cert
 
 #ignore config file
