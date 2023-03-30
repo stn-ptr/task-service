@@ -3,6 +3,9 @@
 *.key
 *.cert
 
+#ignore config file
+tasks.json
+
 # ignore .vscode configuration
 .vscode/
 
