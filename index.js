@@ -56,12 +56,13 @@ https
   .listen(1337);
 
 function getConfigFile(args) {
-  const configParam = "/--ConfigurationFile=/";
+  const configParam = "--ConfigurationFile=";
   let configFile = undefined;
   args.forEach(function (arg) {
+    const finds = arg.search(configParam);
     configFile =
-      arg.search(configParam) >= 0
-        ? arg.slice(configParam.length - 2)
+      finds >= 0
+        ? arg.slice(configParam.length)
         : configFile;
   });
   return configFile;
