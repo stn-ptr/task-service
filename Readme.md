@@ -35,6 +35,18 @@ the key and certificate files:
 
 The server will exit immediately if the config file is missing or the paths are invalid.
 
+### Build container
+This repository contains a Dockerfile to build a container with the task service. To build the container, run the following
+
+    docker build -t task-service .
+
+To run the container, use the following command:
+
+    docker run -p 8000:1337 task-service
+
+The container will be available on port 8000.
+
 ## Features
 
-Supports HTTPS
+* Supports HTTPS
+* Not much more yet 😃
