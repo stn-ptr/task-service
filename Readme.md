@@ -1,7 +1,8 @@
 # Task Service
 
-Not fit for production use. This is a project for training and trying out things,
-please do not use in a productive environment.
+## ⚠ Not fit for production use. 
+
+This is project is meant for learning, practicing and trying out things, not for use in a productive environment.
 
 ## Requirements
 
