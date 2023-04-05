@@ -1,0 +1,25 @@
+{
+  "name": "task-service",
+  "version": "0.0.0",
+  "description": "REST service for a simple task list application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stn-ptr/task-service.git"
+  },
+  "keywords": [
+    "REST",
+    "service",
+    "node",
+    "task"
+  ],
+  "author": "Sebastian Peter",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/stn-ptr/task-service/issues"
+  },
+  "homepage": "https://github.com/stn-ptr/task-service#readme"
+}
