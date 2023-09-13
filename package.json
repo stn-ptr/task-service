@@ -2,6 +2,10 @@
   "name": "task-service",
   "version": "0.0.0",
   "description": "REST service for a simple task list application",
+  "engines": {
+    "node": "10.24.1",
+    "npm": "6.14.12"
+  },
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
