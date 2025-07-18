@@ -33,7 +33,7 @@ test('task should be persisted to file', async () => {
     
     await new Promise(resolve => setTimeout(resolve, 100));
     
-    const filePath = path.join('..', 'data', 'task', task.id + '.json');
+    const filePath = path.join('.', 'data', 'task', task.id + '.json');
     
     try {
         const fileContent = await fs.readFile(filePath, 'utf8');

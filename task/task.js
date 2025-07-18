@@ -10,7 +10,7 @@ function create(description) {
         modified: Date.now(),
     }
 
-    fs.writeFile("../data/task/" + task.id + ".json", JSON.stringify(task, null, 2), (err) => {
+    fs.writeFile("./data/task/" + task.id + ".json", JSON.stringify(task, null, 2), (err) => {
         if (err) {
             console.error('Error writing file:', err);
         }
