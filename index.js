@@ -10,14 +10,14 @@ const configFile = getConfigFile(process.argv);
 let config = undefined;
 
 if (configFile) {
-  fs.exists(configFile, function (exists) {
-    if (!exists) {
-      process.exit(1);
-    }
-  });
-
-  const fileContents = fs.readFileSync(configFile, configFileOptions);
-  config = JSON.parse(fileContents);
+  try{
+    const fileContents = fs.readFileSync(configFile, configFileOptions);
+    config = JSON.parse(fileContents);
+  }
+  catch (e){
+    console.error(String(e));
+    process.exit(1);
+  }
 } else {
   process.exit(1);
 }
