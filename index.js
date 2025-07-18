@@ -18,23 +18,32 @@ if (configFile) {
     console.error(String(e));
     process.exit(1);
   }
-} else {
-  process.exit(1);
 }
 
-let httpOptions;
+let httpOptions, server;
 if (config !== undefined && config['HttpsOptions'] !== undefined) {
   const keyFileName = config.HttpsOptions.key;
   const certFileName = config.HttpsOptions.cert;
-  httpOptions = {
-    key: fs.readFileSync(keyFileName),
-    cert: fs.readFileSync(certFileName),
-  };
+  try {
+    httpOptions = {
+      key: fs.readFileSync(keyFileName),
+      cert: fs.readFileSync(certFileName),
+    };
+  }
+  catch (e) {
+    console.warn(String(e))
+  }
 } else {
-  process.exit(1);
+  httpOptions = {}
 }
 
-https
+if (httpOptions.key && httpOptions.cert) {
+  server = require('node:https')
+} else {
+  server = require('node:http')
+}
+
+server
   .createServer(httpOptions, function (req, res) {
     const header = req.headers["authorization"] || "";
 
