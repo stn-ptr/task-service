@@ -13,6 +13,7 @@ function getConfigFile(args) {
 }
 
 function getConfig() {
+  const process = require("node:process")
   const configFile = getConfigFile(process.argv);
   if (configFile) {
     try {

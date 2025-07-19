@@ -10,7 +10,8 @@
   "scripts": {
     "test": "node --test **/*.test.js",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "lint": "eslint"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,9 @@
   },
   "homepage": "https://github.com/stn-ptr/task-service#readme",
   "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "eslint": "^9.31.0",
+    "globals": "^16.3.0",
     "prettier": "^3.6.2"
   }
 }

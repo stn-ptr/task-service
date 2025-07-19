@@ -1,4 +1,5 @@
 const task = require("../task/task.js");
+const { Buffer } = require("node:buffer");
 
 function app(req, res) {
   const header = req.headers["authorization"] || "";
@@ -9,7 +10,7 @@ function app(req, res) {
     res.end("Access denied");
   } else {
     const token = header.split(/\s+/).pop() || "";
-    const auth = new Buffer(token, "base64").toString();
+    const auth = Buffer.from(token, "base64").toString();
     const parts = auth.split(/:/);
     const username = parts[0];
     const password = parts[1];
@@ -38,7 +39,7 @@ function app(req, res) {
 
           res.writeHead(201, { "Content-Type": "text/plain" });
           res.end(JSON.stringify(responseBody));
-        } catch (e) {
+        } catch {
           res.writeHead(500, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ error: "error creating the task" }));
         }
