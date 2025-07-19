@@ -2,23 +2,9 @@
 
 const https = require("https");
 const fs = require("fs");
+const { getConfig }  = require("./app/config.js");
 
-const configFileOptions = { encoding: "utf8" };
-
-const configFile = getConfigFile(process.argv);
-
-let config = undefined;
-
-if (configFile) {
-  try{
-    const fileContents = fs.readFileSync(configFile, configFileOptions);
-    config = JSON.parse(fileContents);
-  }
-  catch (e){
-    console.error(String(e));
-    process.exit(1);
-  }
-}
+const config = getConfig();
 
 let httpOptions, server;
 if (config !== undefined && config['HttpsOptions'] !== undefined) {
@@ -93,16 +79,3 @@ server
     }
   })
   .listen(1337);
-
-function getConfigFile(args) {
-  const configParam = "--ConfigurationFile=";
-  let configFile = undefined;
-  args.forEach(function (arg) {
-    const finds = arg.search(configParam);
-    configFile =
-      finds >= 0
-        ? arg.slice(configParam.length)
-        : configFile;
-  });
-  return configFile;
-}
