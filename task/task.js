@@ -1,11 +1,11 @@
 const fs = require("node:fs");
 const crypto = require("node:crypto");
 
-function create(description) {
+function create(title) {
 
     task = {
         id: crypto.randomUUID(),
-        description: description,
+        title: title,
         created: Date.now(),
         modified: Date.now(),
     }
