@@ -8,7 +8,9 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "node --test **/*.test.js"
+    "test": "node --test **/*.test.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "repository": {
     "type": "git",
@@ -25,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/stn-ptr/task-service/issues"
   },
-  "homepage": "https://github.com/stn-ptr/task-service#readme"
+  "homepage": "https://github.com/stn-ptr/task-service#readme",
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  }
 }

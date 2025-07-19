@@ -7,25 +7,21 @@ function getConfigFile(args) {
   let configFile = undefined;
   args.forEach(function (arg) {
     const finds = arg.search(configParam);
-    configFile =
-      finds >= 0
-        ? arg.slice(configParam.length)
-        : configFile;
+    configFile = finds >= 0 ? arg.slice(configParam.length) : configFile;
   });
   return configFile;
 }
 
 function getConfig() {
-    const configFile = getConfigFile(process.argv);
-    if (configFile) {
-        try {
-            const fileContents = fs.readFileSync(configFile, configFileOptions);
-            return JSON.parse(fileContents);
-        }
-        catch (e) {
-            console.error(String(e));
-            process.exit(1);
-        }
+  const configFile = getConfigFile(process.argv);
+  if (configFile) {
+    try {
+      const fileContents = fs.readFileSync(configFile, configFileOptions);
+      return JSON.parse(fileContents);
+    } catch (e) {
+      console.error(String(e));
+      process.exit(1);
     }
+  }
 }
 exports.getConfig = getConfig;

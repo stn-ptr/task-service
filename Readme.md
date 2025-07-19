@@ -1,6 +1,6 @@
 # Task Service
 
-## ⚠ Not fit for production use. 
+## ⚠ Not fit for production use.
 
 This is project is meant for learning, practicing and trying out things, not for use in a productive environment.
 
@@ -14,7 +14,7 @@ This is project is meant for learning, practicing and trying out things, not for
 ### Create certificates
 
 Certificates for development can be created with openssl:
-    
+
     openssl req -x509 -out localhost.crt -keyout localhost.key \
         -newkey rsa:2048 -nodes -sha256 \
         -subj '/CN=localhost' -extensions EXT -config <( \
@@ -37,6 +37,7 @@ the key and certificate files:
 The server will exit immediately if the config file is missing or the paths are invalid.
 
 ### Build container
+
 This repository contains a Dockerfile to build a container with the task service. To build the container, run the following
 
     docker build -t task-service .
@@ -49,5 +50,5 @@ The container will be available on port 8000.
 
 ## Features
 
-* Supports HTTPS
-* Not much more yet 😃
+- Supports HTTPS
+- Not much more yet 😃

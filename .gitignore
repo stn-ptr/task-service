@@ -20,4 +20,6 @@ bin/
 *.sln
 *.njsproj
 
+/node_modules/
+
 /data/
