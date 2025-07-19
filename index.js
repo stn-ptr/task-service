@@ -1,6 +1,5 @@
 "use strict";
 
-const https = require("https");
 const fs = require("fs");
 const { getConfig }  = require("./app/config.js");
 
