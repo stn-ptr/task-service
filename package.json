@@ -11,8 +11,8 @@
     "test": "node --test **/*.test.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "eslint"
-    "start": "node index.js --ConfigurationFile=tasks.json",
+    "lint": "eslint",
+    "start": "node index.js --ConfigurationFile=tasks.json"
   },
   "repository": {
     "type": "git",
