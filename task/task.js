@@ -1,7 +1,8 @@
-const fs = require("node:fs");
 const crypto = require("node:crypto");
 
-function create(title) {
+const persistence = require("../persistence/file/task");
+
+function create(title, callback) {
   const task = {
     id: crypto.randomUUID(),
     title: title,
@@ -9,17 +10,7 @@ function create(title) {
     modified: Date.now(),
   };
 
-  fs.writeFile(
-    "./data/task/" + task.id + ".json",
-    JSON.stringify(task, null, 2),
-    (err) => {
-      if (err) {
-        console.error("Error writing file:", err);
-      }
-    },
-  );
-
-  return task;
+  persistence.save(task, (task, err) => callback(task, err));
 }
 
 module.exports = { create };

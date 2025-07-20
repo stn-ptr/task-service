@@ -19,10 +19,16 @@ function postTask(req, res) {
     req.on("end", () => {
         try {
             const requestBody = JSON.parse(body);
-            const responseBody = task.create(requestBody.title);
+            task.create(requestBody.title, (task, err) => {
+                if (err) {
+                    res.writeHead(500, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({error: String(err)}));
+                }
 
-            res.writeHead(201, { "Content-Type": "text/plain" });
-            res.end(JSON.stringify(responseBody));
+                res.writeHead(201, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(task));
+            });
+
         } catch {
             res.writeHead(500, { "Content-Type": "application/json" });
             res.end(JSON.stringify({ error: "error creating the task" }));
