@@ -52,3 +52,22 @@ The container will be available on port 8000.
 
 - Supports HTTPS
 - Not much more yet 😃
+
+## Testing
+
+This describes some manual tests I'm running
+
+### PowerShell
+
+Credentials are stored in a SecureString, I create one per session interactively with Get-Credential.
+
+
+```powershell
+$credential = Get-Credential
+```
+
+Create a minimal new task
+
+```powershell
+Invoke-WebRequest "http://localhost:3000/task" -Credential $credential -AllowUnencryptedAuthentication -Method Post -Body '{"title": "New Task"}'
+```
