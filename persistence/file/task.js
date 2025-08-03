@@ -35,6 +35,23 @@ function remove(id, callback) {
     });
 }
 
+function list(callback) {
+  fs.readdir(defaultDataDir, (err, files) => {
+    if (err) {
+      return callback(null, err);
+    }
+    const tasks = [];
+    files.forEach(file => {
+      if (file.endsWith(extension)) {
+        const id = file.slice(0, -extension.length);
+        tasks.push(id);
+      }
+    });
+    callback(tasks, null);
+  });
+}
+
 exports.save = save
 exports.load = load
 exports.remove = remove
+exports.list = list

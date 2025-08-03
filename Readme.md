@@ -78,6 +78,12 @@ Create a minimal new task
 Invoke-WebRequest "http://localhost:3000/task" -Credential $credential -AllowUnencryptedAuthentication -Method Post -Body '{"title": "New Task"}'
 ```
 
+ Get all tasks
+
+ ```powershell
+ Invoke-WebRequest "http://localhost:3000/task" -Credential $credential -AllowUnencryptedAuthentication
+ ```
+
 Get a task
 
 ```powershell

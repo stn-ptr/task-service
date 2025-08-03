@@ -28,6 +28,10 @@ function app(req, res) {
   if (method === "PUT" && pathname.startsWith("/task/")) {
     handler.updateTask(req, res);
   }
+
+  if (method === "GET" && pathname === "/task") {
+    handler.getAllTasks(req, res);
+  }
 }
 
 exports.app = app;

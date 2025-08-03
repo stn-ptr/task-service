@@ -74,4 +74,15 @@ function update(id, title, done, callback) {
   });
 }
 
-module.exports = { create, get, remove, update };
+function getAll(callback) {
+  persistence.list((tasks, err) => {
+    if (err) {
+      callback(null, err);
+      return;
+    }
+
+    callback(tasks, null);
+  });
+}
+
+module.exports = { create, get, remove, update, getAll };
