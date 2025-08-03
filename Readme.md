@@ -84,6 +84,12 @@ Get a task
 Invoke-WebRequest "http://localhost:3000/task/99e587e6-6550-4601-9e2a-d40d2a2dce7b" -Credential $credential -AllowUnencryptedAuthentication
 ```
 
+Update a task
+
+```powershell
+Invoke-WebRequest "http://localhost:3000/task/99e587e6-6550-4601-9e2a-d40d2a2dce7b" -Credential $credential -AllowUnencryptedAuthentication -Method Put -Body '{"done": true}' 
+```
+
 Delete a task
 
 ```powershell

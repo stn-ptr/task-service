@@ -44,4 +44,34 @@ function remove(id, callback) {
   });
 }
 
-module.exports = { create, get, remove };
+function update(id, title, done, callback) {
+  persistence.load(id, (task, err) => { 
+    if (err) {
+      return callback(null, err);
+    }
+
+    const timestamp = Date.now();
+
+    if (title !== undefined) {
+      task.title = title;
+    }
+
+    if (done !== undefined) {
+      if (done === true ) {
+        if (task.done === undefined) {
+          task.done = timestamp;
+        }
+      } else {
+        if (done === false) {
+          delete task.done;
+        }
+      }
+    }
+
+    task.modified = timestamp;
+
+    persistence.save(task, (task, err) => callback(task, err));
+  });
+}
+
+module.exports = { create, get, remove, update };

@@ -24,6 +24,10 @@ function app(req, res) {
   if (method === "DELETE" && pathname.startsWith("/task/")) {
     handler.deleteTask(req, res);
   }
+
+  if (method === "PUT" && pathname.startsWith("/task/")) {
+    handler.updateTask(req, res);
+  }
 }
 
 exports.app = app;
