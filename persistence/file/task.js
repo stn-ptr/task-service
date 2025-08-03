@@ -29,5 +29,12 @@ function load(id, callback) {
   );
 }
 
+function remove(id, callback) {
+    fs.unlink(defaultDataDir + id + extension, err => {
+      callback(err);
+    });
+}
+
 exports.save = save
 exports.load = load
+exports.remove = remove

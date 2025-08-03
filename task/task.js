@@ -29,4 +29,19 @@ function get(id, callback) {
   });
 }
 
-module.exports = { create, get };
+function remove(id, callback) {
+  persistence.load(id, (task, err) => {
+    if (err) {  
+      return callback(null, err);
+    }
+
+    persistence.remove(id, (err) => {
+      if (err) {
+        return callback(null, err);
+      }
+      callback(task, null);
+    });
+  });
+}
+
+module.exports = { create, get, remove };

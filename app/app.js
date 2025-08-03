@@ -20,6 +20,10 @@ function app(req, res) {
   if (method === "GET" && pathname.startsWith("/task/")) {
     handler.getTask(req, res);
   }
+
+  if (method === "DELETE" && pathname.startsWith("/task/")) {
+    handler.deleteTask(req, res);
+  }
 }
 
 exports.app = app;
