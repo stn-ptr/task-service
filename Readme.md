@@ -55,7 +55,13 @@ The container will be available on port 8000.
 
 ## Testing
 
-This describes some manual tests I'm running
+This describes some tests I'm running
+
+### Unit Tests
+
+```shell
+node --test "**/*.test.js"
+```
 
 ### PowerShell
 
@@ -70,4 +76,10 @@ Create a minimal new task
 
 ```powershell
 Invoke-WebRequest "http://localhost:3000/task" -Credential $credential -AllowUnencryptedAuthentication -Method Post -Body '{"title": "New Task"}'
+```
+
+Get a task
+
+```powershell
+Invoke-WebRequest "http://localhost:3000/task/99e587e6-6550-4601-9e2a-d40d2a2dce7b" -Credential $credential -AllowUnencryptedAuthentication
 ```

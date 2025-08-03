@@ -16,6 +16,10 @@ function app(req, res) {
   if (method === "POST" && pathname === "/task") {
     handler.postTask(req, res)
   }
+
+  if (method === "GET" && pathname.startsWith("/task/")) {
+    handler.getTask(req, res);
+  }
 }
 
 exports.app = app;

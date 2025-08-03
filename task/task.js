@@ -13,4 +13,20 @@ function create(title, callback) {
   persistence.save(task, (task, err) => callback(task, err));
 }
 
-module.exports = { create };
+function get(id, callback) {
+  persistence.load(id, (task, err) => {
+    if (err) {
+      return callback(null, err);
+    }
+
+    publicTask = {
+      id: task.id,
+      title: task.title,
+      done: task.done ? true: false,
+    }
+
+    callback(publicTask, null);
+  });
+}
+
+module.exports = { create, get };

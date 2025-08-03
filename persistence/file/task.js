@@ -11,4 +11,23 @@ function save(task, callback) {
   );
 }
 
+function load(id, callback) {
+  fs.readFile(
+    defaultDataDir + id + extension,
+    "utf8",
+    (err, data) => {
+      if (err) {
+        return callback(null, err);
+      }
+      try {
+        const task = JSON.parse(data);
+        callback(task, null);
+      } catch (parseError) {
+        callback(null, parseError);
+      }
+    }
+  );
+}
+
 exports.save = save
+exports.load = load

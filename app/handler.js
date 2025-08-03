@@ -36,4 +36,27 @@ function postTask(req, res) {
     });
 }
 
-exports.postTask = postTask
+function getTask(req, res) {
+    const authentication = authenticate(req);
+    if (!authentication) {
+        res.statusCode = 401;
+        res.setHeader("WWW-Authenticate", 'Basic realm="task-service"');
+        res.end("Access denied");
+        return;
+    }
+
+    const id = req.url.split("/").pop();
+    task.get(id, (task, err) => {
+        if (err) {
+            res.writeHead(404, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: "Task not found" }));
+            return;
+        }
+
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(task));
+    });
+}
+
+exports.getTask = getTask;
+exports.postTask = postTask;

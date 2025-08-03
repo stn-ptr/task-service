@@ -82,3 +82,50 @@ test("task should be persisted to file", () => {
   });
 
 });
+
+test("task should be read from file", () => {
+  const fs = require("node:fs/promises");
+  const path = require("node:path");
+
+  const title = "Test task for reading";
+  create(title, async (task, err) => {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    const filePath = path.join(".", "data", "task", task.id + ".json");
+
+    try {
+      const fileContent = await fs.readFile(filePath, "utf8");
+      const savedTask = JSON.parse(fileContent);
+
+      assert.strictEqual(
+        savedTask.id,
+        task.id,
+        "Read task should have the same id",
+      );
+      assert.strictEqual(
+        savedTask.title,
+        task.title,
+        "Read task should have the same description",
+      );
+      assert.strictEqual(
+        savedTask.created,
+        task.created,
+        "Read task should have the same created timestamp",
+      );
+      assert.strictEqual(
+        savedTask.modified,
+        task.modified,
+        "Read task should have the same modified timestamp",
+      );
+
+      console.log("✓ Task successfully read from file:", filePath);
+
+      await fs.unlink(filePath);
+      console.log("✓ Test file cleaned up");
+    } catch (error) {
+      assert.fail(
+        "Failed to read or parse the persisted task file: " + error.message,
+      );
+    }
+  });
+});
