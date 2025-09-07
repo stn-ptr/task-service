@@ -9,42 +9,7 @@ class AuthenticationManager {
   constructor(config = {}) {
     this.strategies = [];
     this.config = config;
-    this.setupStrategies();
-  }
-
-  setupStrategies() {
-    const authConfig = this.config.authentication || {};
-    
-    // Standard: Basic Auth wenn keine Konfiguration vorhanden
-    const methods = authConfig.methods || ["basic"];
-    
-    methods.forEach(methodConfig => {
-      try {
-        let strategy;
-        let strategyConfig;
-
-        if (typeof methodConfig === "string") {
-          // Einfache Konfiguration: nur der Name
-          strategy = AuthStrategyFactory.createStrategy(methodConfig, authConfig[methodConfig]);
-        } else {
-          // Erweiterte Konfiguration: { type: "basic", enabled: true, config: {...} }
-          if (methodConfig.enabled !== false) {
-            strategy = AuthStrategyFactory.createStrategy(methodConfig.type, methodConfig.config);
-          }
-        }
-
-        if (strategy) {
-          this.strategies.push(strategy);
-          console.log(`Authentifizierungsstrategie geladen: ${strategy.getName()}`);
-        }
-      } catch (error) {
-        console.error(`Fehler beim Laden der Authentifizierungsstrategie:`, error.message);
-      }
-    });
-
-    if (this.strategies.length === 0) {
-      console.warn("Keine Authentifizierungsstrategien konfiguriert - alle Anfragen werden abgelehnt!");
-    }
+    setupStrategies(this.config);
   }
 
   /**
@@ -107,6 +72,39 @@ class AuthenticationManager {
     const userScopes = user.scopes || [];
     return requiredScopes.every(scope => userScopes.includes(scope));
   }
+}
+
+function setupStrategies(config) {
+  const strategies = []
+  const authConfig = config.authentication || {};    
+  const methods = authConfig.methods || ["basic"];
+    
+  methods.forEach(methodConfig => {
+    try {
+      let strategy;
+
+      if (typeof methodConfig === "string") {
+        strategy = AuthStrategyFactory.createStrategy(methodConfig, authConfig[methodConfig]);
+      } else {
+        // Erweiterte Konfiguration: { type: "basic", enabled: true, config: {...} }
+        if (methodConfig.enabled !== false) {
+          strategy = AuthStrategyFactory.createStrategy(methodConfig.type, methodConfig.config);
+        }
+      }
+
+      if (strategy) {
+        strategies.push(strategy);
+        console.log(`Authentifizierungsstrategie geladen: ${strategy.getName()}`);
+      }
+    } catch (error) {
+      console.error(`Fehler beim Laden der Authentifizierungsstrategie:`, error.message);
+    }
+  });
+
+  if (strategies.length === 0) {
+    console.warn("Keine Authentifizierungsstrategien konfiguriert - alle Anfragen werden abgelehnt!");
+  }
+  return strategies;
 }
 
 module.exports = AuthenticationManager;
