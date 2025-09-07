@@ -1,82 +1,33 @@
+const { getConfig } = require("../config.js")
 const AuthStrategyFactory = require("./AuthStrategyFactory");
 
 /**
- * Hauptklasse für Authentifizierung mit Strategy Pattern
- * Unterstützt multiple Strategien und Chain of Responsibility
+ * Authentifiziert eine Anfrage gegen alle konfigurierten Strategien
+ * @param {Object} req - HTTP Request Object
+ * @returns {Object|null} User-Objekt oder null
  */
-class AuthenticationManager {
-  
-  constructor(config = {}) {
-    this.strategies = [];
-    this.config = config;
-    setupStrategies(this.config);
-  }
-
-  /**
-   * Authentifiziert eine Anfrage gegen alle konfigurierten Strategien
-   * @param {Object} req - HTTP Request Object
-   * @returns {Object|null} User-Objekt oder null
-   */
-  authenticate(req) {
-    // Versuche alle Strategien nacheinander (Chain of Responsibility)
-    for (const strategy of this.strategies) {
-      try {
-        const result = strategy.authenticate(req);
-        if (result && result.authenticated) {
-          console.log(`Erfolgreich authentifiziert mit ${strategy.getName()}`);
-          return result;
-        }
-      } catch (error) {
-        console.warn(`Fehler bei ${strategy.getName()}:`, error.message);
-        // Weiter mit nächster Strategie
+function authenticate(req) {
+  config = getConfig()
+  const strategies = setupStrategies(config);
+  for (const strategy of strategies) {
+    try {
+      const result = strategy.authenticate(req, config);
+      if (result && result.authenticated) {
+        console.log(`Erfolgreich authentifiziert mit ${strategy.getName()}`);
+        return result;
       }
+    } catch (error) {
+      console.warn(`Fehler bei ${strategy.getName()}:`, error.message);
     }
-
-    console.log("Authentifizierung fehlgeschlagen - keine Strategie erfolgreich");
-    return null;
   }
 
-  /**
-   * Middleware-Funktion für Express-ähnliche Frameworks
-   */
-  middleware() {
-    return (req, res, next) => {
-      const user = this.authenticate(req);
-      
-      if (user) {
-        req.user = user;
-        next();
-      } else {
-        res.statusCode = 401;
-        res.setHeader("Content-Type", "application/json");
-        res.end(JSON.stringify({
-          error: "Unauthorized",
-          message: "Authentifizierung erforderlich"
-        }));
-      }
-    };
-  }
-
-  /**
-   * Prüft ob ein Benutzer bestimmte Berechtigungen hat
-   */
-  hasPermission(user, requiredScopes = []) {
-    if (!user || !user.authenticated) {
-      return false;
-    }
-
-    if (requiredScopes.length === 0) {
-      return true; // Keine spezifischen Berechtigungen erforderlich
-    }
-
-    const userScopes = user.scopes || [];
-    return requiredScopes.every(scope => userScopes.includes(scope));
-  }
+  console.log("Authentifizierung fehlgeschlagen - keine Strategie erfolgreich");
+  return null;
 }
 
 function setupStrategies(config) {
   const strategies = []
-  const authConfig = config.authentication || {};    
+  const authConfig = config?.authentication || {};    
   const methods = authConfig.methods || ["basic"];
     
   methods.forEach(methodConfig => {
@@ -107,4 +58,4 @@ function setupStrategies(config) {
   return strategies;
 }
 
-module.exports = AuthenticationManager;
+exports.authenticate = authenticate;

@@ -1,22 +1,3 @@
-const { getConfig } = require("./config.js");
-const AuthenticationManager = require("./auth/auth.js");
-
-// Singleton-Instanz des AuthenticationManagers
-let authManager = null;
-
-function getAuthenticationManager() {
-  if (!authManager) {
-    const config = getConfig();
-    authManager = new AuthenticationManager(config);
-  }
-  return authManager;
-}
-
-function authenticate(req) {
-  const manager = getAuthenticationManager();
-  return manager.authenticate(req);
-}
-
 // Legacy-Funktion für Rückwärtskompatibilität
 function legacyAuthenticate(req) {
   const { Buffer } = require("node:buffer");
@@ -36,7 +17,5 @@ function legacyAuthenticate(req) {
 }
 
 module.exports = {
-  authenticate,
-  getAuthenticationManager,
   legacyAuthenticate // Für Rückwärtskompatibilität
 };
