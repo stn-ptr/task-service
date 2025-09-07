@@ -9,7 +9,11 @@ function New-PasswordHash {
         $Password = Read-Host "Passwort:" -AsSecureString
     }
 
-    $passwordBytes = [System.Text.Encoding]::UTF8.GetBytes($Password)
+    $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
+    $plain = [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR($BSTR)
+    [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($BSTR)
+
+    $passwordBytes = [System.Text.Encoding]::UTF8.GetBytes($plain)
     $saltBytesForHash = [System.Convert]::FromHexString($salt)
 
     $pbkdf2 = New-Object System.Security.Cryptography.Rfc2898DeriveBytes($passwordBytes, $saltBytesForHash, 10000, [System.Security.Cryptography.HashAlgorithmName]::SHA512)
