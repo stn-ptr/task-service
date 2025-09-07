@@ -1,5 +1,5 @@
 const { getConfig } = require("./config.js");
-const AuthenticationManager = require("./auth/AuthenticationManager");
+const AuthenticationManager = require("./auth/auth.js");
 
 // Singleton-Instanz des AuthenticationManagers
 let authManager = null;
