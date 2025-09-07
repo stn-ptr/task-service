@@ -4,9 +4,7 @@ const { authenticate } = require("./authentication.js");
 function postTask(req, res) {
     const authentication = authenticate(req);
     if (!authentication) {
-        res.statusCode = 401;
-        res.setHeader("WWW-Authenticate", 'Basic realm="task-service"');
-        res.end("Access denied");
+        sendAccessDenied(res);
         return;
     }
 
@@ -39,9 +37,7 @@ function postTask(req, res) {
 function getTask(req, res) {
     const authentication = authenticate(req);
     if (!authentication) {
-        res.statusCode = 401;
-        res.setHeader("WWW-Authenticate", 'Basic realm="task-service"');
-        res.end("Access denied");
+        sendAccessDenied(res);
         return;
     }
 
@@ -61,9 +57,7 @@ function getTask(req, res) {
 function deleteTask(req, res) {
     const authentication = authenticate(req);       
     if (!authentication) {
-        res.statusCode = 401;
-        res.setHeader("WWW-Authenticate", 'Basic realm="task-service"');
-        res.end("Access denied");
+        sendAccessDenied(res);
         return;
     }
 
@@ -83,9 +77,7 @@ function deleteTask(req, res) {
 function updateTask(req, res) {
     const authentication = authenticate(req);
     if (!authentication) {
-        res.statusCode = 401;
-        res.setHeader("WWW-Authenticate", 'Basic realm="task-service"');
-        res.end("Access denied");
+        sendAccessDenied(res);
         return;
     }
 
@@ -120,9 +112,7 @@ function updateTask(req, res) {
 function getAllTasks(req, res) {
     const authentication = authenticate(req);
     if (!authentication) {
-        res.statusCode = 401;
-        res.setHeader("WWW-Authenticate", 'Basic realm="task-service"');
-        res.end("Access denied");
+        sendAccessDenied(res);
         return;
     }
 
@@ -136,7 +126,13 @@ function getAllTasks(req, res) {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify(tasks));
     });
-}  
+}
+
+function sendAccessDenied(res) {
+        res.statusCode = 401;
+        res.setHeader("WWW-Authenticate", 'Basic realm="task-service"');
+        res.end("Access denied");
+}
 
 exports.getTask = getTask;
 exports.postTask = postTask;
