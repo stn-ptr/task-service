@@ -28,4 +28,4 @@ if (httpOptions.key && httpOptions.cert) {
   server = require("node:http");
 }
 
-server.createServer(httpOptions, app).listen(1337);
+server.createServer(httpOptions, app).listen(3000);
