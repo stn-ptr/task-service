@@ -1,0 +1,17 @@
+meta {
+  name: create task
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{HOST}}/task
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "new task from bruno"
+  }
+}

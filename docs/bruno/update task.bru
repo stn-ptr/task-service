@@ -1,0 +1,24 @@
+meta {
+  name: update task
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{HOST}}/task/:task
+  body: json
+  auth: inherit
+}
+
+params:path {
+  task: 00000000-0000-0000-0000-000000000000
+}
+
+body:json {
+  {
+    "id": "03c0c9c4-3339-4790-a0b1-1e076b1036b9",
+    "title": "Test task description update",
+    "created": 1754255214359,
+    "modified": 1754255214358
+  }
+}

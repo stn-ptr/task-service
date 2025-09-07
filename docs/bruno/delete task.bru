@@ -1,0 +1,15 @@
+meta {
+  name: delete task
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{HOST}}/task/:task
+  body: none
+  auth: inherit
+}
+
+params:path {
+  task: 00000000-0000-0000-0000-000000000000
+}
