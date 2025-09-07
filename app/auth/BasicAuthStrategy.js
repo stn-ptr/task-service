@@ -1,4 +1,5 @@
 const { Buffer } = require("node:buffer");
+const crypto = require("crypto");
 const AuthStrategy = require("./AuthStrategy");
 
 /**
@@ -41,14 +42,21 @@ class BasicAuthStrategy extends AuthStrategy {
   }
 
   validateCredentials(username, password) {
-    // TODO: Implementierung gegen echten User-Store
-    // Für Demo: hardcoded credentials
-    const validUsers = this.config.users || {
-      "admin": "password123",
-      "user": "secret"
+    const users =
+      this.config &&
+      this.config.users;
+
+    if (!users) {
+      return false
     };
-    
-    return validUsers[username] === password;
+
+    const user = users[username];
+    if (!user || !user.salt || !user.hash) {
+      return false
+    };
+
+    const hash = crypto.pbkdf2Sync(password, Buffer.from(user.salt, "hex"), 10000, 64, "sha512").toString("hex");
+    return hash.toLowerCase() === user.hash.toLowerCase();
   }
 }
 
