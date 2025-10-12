@@ -2,5 +2,20 @@
   "HttpsOptions": {
     "cert": "cert.pem",
     "key": "privkey.pem"
+  },
+  "authentication": {
+    "methods": ["basic"],
+    "basic": {
+      "users": {
+        "name1": {
+          "salt": "",
+          "hash": ""
+        },
+        "name2": {
+          "salt": "",
+          "hash": ""
+        }
+      }
+    }
   }
 }
