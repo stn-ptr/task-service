@@ -7,7 +7,7 @@ const AuthStrategyFactory = require("./AuthStrategyFactory");
  * @returns {Object|null} User-Objekt oder null
  */
 function authenticate(req) {
-  config = getConfig()
+  const config = getConfig()
   const strategies = setupStrategies(config);
   for (const strategy of strategies) {
     try {
