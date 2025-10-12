@@ -22,7 +22,7 @@ if (config !== undefined && config["HttpsOptions"] !== undefined) {
   httpOptions = {};
 }
 
-if (httpOptions.key && httpOptions.cert) {
+if (httpOptions && httpOptions.key && httpOptions.cert) {
   server = require("node:https");
 } else {
   server = require("node:http");
