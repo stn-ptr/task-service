@@ -44,9 +44,9 @@ This repository contains a Dockerfile to build a container with the task service
 
 To run the container, use the following command:
 
-    docker run -p 8000:1337 task-service
+    docker run -p 3000:3000 task-service
 
-The container will be available on port 8000.
+The container will be available on port 3000.
 
 ## Features
 
