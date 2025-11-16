@@ -3,6 +3,10 @@ const fs = require("node:fs");
 const defaultDataDir = "./data/task/"
 const extension = ".json"
 
+function setup() {
+  fs.mkdirSync(defaultDataDir, {recursive: true});
+}
+
 function save(task, callback) {
   fs.writeFile(
     defaultDataDir + task.id + extension,
@@ -55,3 +59,4 @@ exports.save = save
 exports.load = load
 exports.remove = remove
 exports.list = list
+exports.setup = setup

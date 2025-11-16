@@ -1,4 +1,5 @@
 const fs = require("fs");
+const persistence = require("../persistence/file/task.js")
 
 const configFileOptions = { encoding: "utf8" };
 
@@ -25,4 +26,10 @@ function getConfig() {
     }
   }
 }
+
+function setup() {
+  persistence.setup();
+}
+
+exports.setup = setup;
 exports.getConfig = getConfig;
