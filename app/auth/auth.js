@@ -1,5 +1,5 @@
 const { getConfig } = require("../config.js")
-const AuthStrategyFactory = require("./AuthStrategyFactory");
+const { createStrategy } = require("./authStrategies");
 
 /**
  * Authentifiziert eine Anfrage gegen alle konfigurierten Strategien
@@ -35,11 +35,11 @@ function setupStrategies(config) {
       let strategy;
 
       if (typeof methodConfig === "string") {
-        strategy = AuthStrategyFactory.createStrategy(methodConfig, authConfig[methodConfig]);
+        strategy = createStrategy(methodConfig, authConfig[methodConfig]);
       } else {
         // Erweiterte Konfiguration: { type: "basic", enabled: true, config: {...} }
         if (methodConfig.enabled !== false) {
-          strategy = AuthStrategyFactory.createStrategy(methodConfig.type, methodConfig.config);
+          strategy = createStrategy(methodConfig.type, methodConfig.config);
         }
       }
 
