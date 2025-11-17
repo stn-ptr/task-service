@@ -60,4 +60,4 @@ class BasicAuthStrategy extends AuthStrategy {
   }
 }
 
-module.exports = BasicAuthStrategy;
+module.exports = AuthStrategyBasic;

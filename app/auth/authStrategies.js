@@ -1,4 +1,4 @@
-const BasicAuthStrategy = require("./BasicAuthStrategy");
+const BasicAuthStrategy = require("./authStrategyBasic");
 
 /**
  * Factory for authentication strategies
