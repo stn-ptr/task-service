@@ -1,13 +1,7 @@
 const { Buffer } = require("node:buffer");
 const crypto = require("crypto");
-const AuthStrategy = require("./AuthStrategy");
 
-/**
- * Basic Authentication Strategie
- */
-class BasicAuthStrategy extends AuthStrategy {
-  
-  authenticate(req) {
+function authenticate(req, config) {
     const header = req.headers["authorization"] || "";
 
     if (!header.startsWith("Basic ")) {
@@ -25,8 +19,7 @@ class BasicAuthStrategy extends AuthStrategy {
 
       const [username, password] = parts;
       
-      // Hier würden Sie normalerweise gegen eine Datenbank/User-Store prüfen
-      if (this.validateCredentials(username, password)) {
+      if (validateCredentials(username, password, config)) {
         return {
           username,
           authMethod: "basic",
@@ -41,23 +34,20 @@ class BasicAuthStrategy extends AuthStrategy {
     }
   }
 
-  validateCredentials(username, password) {
-    const users =
-      this.config &&
-      this.config.users;
+function  validateCredentials(username, password, config) {
+    const users = config && config.users;
 
     if (!users) {
-      return false
-    };
+      return false;
+    }
 
     const user = users[username];
     if (!user || !user.salt || !user.hash) {
-      return false
-    };
+      return false;
+    }
 
     const hash = crypto.pbkdf2Sync(password, Buffer.from(user.salt, "hex"), 10000, 64, "sha512").toString("hex");
     return hash.toLowerCase() === user.hash.toLowerCase();
-  }
 }
 
-module.exports = AuthStrategyBasic;
+module.exports.authenticate = authenticate;

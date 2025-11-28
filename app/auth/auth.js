@@ -1,27 +1,26 @@
 const { getConfig } = require("../config.js")
-const { createStrategy } = require("./authStrategies");
+const { createStrategy } = require("./authStrategies.js");
 
 /**
- * Authentifiziert eine Anfrage gegen alle konfigurierten Strategien
- * @param {Object} req - HTTP Request Object
- * @returns {Object|null} User-Objekt oder null
+ * authenticates an incoming request using all configured strategies
+ * @param {Object} req - HTTP request object
+ * @returns {Object|null} user object or null
  */
 function authenticate(req) {
   const config = getConfig()
   const strategies = setupStrategies(config);
   for (const strategy of strategies) {
     try {
-      const result = strategy.authenticate(req, config);
+      const result = strategy(req);
       if (result && result.authenticated) {
-        console.log(`Erfolgreich authentifiziert mit ${strategy.getName()}`);
         return result;
       }
     } catch (error) {
-      console.warn(`Fehler bei ${strategy.getName()}:`, error.message);
+      console.warn("authentication error:", error.message);
     }
   }
 
-  console.log("Authentifizierung fehlgeschlagen - keine Strategie erfolgreich");
+  console.log("authentication failed - no strategy was successful");
   return null;
 }
 
@@ -37,7 +36,6 @@ function setupStrategies(config) {
       if (typeof methodConfig === "string") {
         strategy = createStrategy(methodConfig, authConfig[methodConfig]);
       } else {
-        // Erweiterte Konfiguration: { type: "basic", enabled: true, config: {...} }
         if (methodConfig.enabled !== false) {
           strategy = createStrategy(methodConfig.type, methodConfig.config);
         }
@@ -45,15 +43,14 @@ function setupStrategies(config) {
 
       if (strategy) {
         strategies.push(strategy);
-        console.log(`Authentifizierungsstrategie geladen: ${strategy.getName()}`);
       }
     } catch (error) {
-      console.error(`Fehler beim Laden der Authentifizierungsstrategie:`, error.message);
+      console.error("error loading authentication strategy:", error.message);
     }
   });
 
   if (strategies.length === 0) {
-    console.warn("Keine Authentifizierungsstrategien konfiguriert - alle Anfragen werden abgelehnt!");
+    console.warn("no authentication method configured - all requests will be denied!");
   }
   return strategies;
 }

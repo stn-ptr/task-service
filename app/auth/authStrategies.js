@@ -1,18 +1,13 @@
-const BasicAuthStrategy = require("./authStrategyBasic");
+const { authenticate } = require("./authStrategyBasic.js");
 
-/**
- * Factory for authentication strategies
- */
 function createStrategy(type, config) {
     switch (type.toLowerCase()) {
         case "basic": {
-            const basicStrategy = new BasicAuthStrategy();
-            basicStrategy.initialize(config);
-            return basicStrategy;
+            return function(req) { return authenticate(req, config); }
         }
         default:
-            throw new Error(`Unbekannte Authentifizierungsstrategie: ${type}`);
+            throw new Error(`unknown authentication strategy: ${type}`);
     }
 }
 
-module.exports = createStrategy;
+exports.createStrategy = createStrategy;
