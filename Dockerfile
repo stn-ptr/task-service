@@ -5,9 +5,6 @@ WORKDIR /usr/local/lib/task-service
 COPY package.json package-lock.json /usr/local/lib/task-service/
 RUN npm install
 
-COPY index.js ./
-COPY app/ ./app/
-COPY task/ ./task/
-COPY persistence/ ./persistence/
+COPY app/ .
 
 CMD ["node", "/usr/local/lib/task-service/index.js", "--ConfigurationFile=/etc/task-service/tasks.json"]

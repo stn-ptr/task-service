@@ -1,4 +1,4 @@
-const task = require("../task/task.js");
+const task = require("./task/task.js");
 const { authenticate } = require("./auth/auth.js");
 
 function postTask(req, res) {

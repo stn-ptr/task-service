@@ -1,5 +1,5 @@
 const fs = require("fs");
-const persistence = require("../persistence/file/task.js")
+const persistence = require("./persistence/file/task.js")
 
 const configFileOptions = { encoding: "utf8" };
 
