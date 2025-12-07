@@ -6,8 +6,7 @@ This is project is meant for learning, practicing and trying out things, not for
 
 ## Requirements
 
-- Node 18.15.0
-- ~~Node 0.10.48 - Ancient, but this version runs on my NAS, which is ancient as well.~~
+- Node 22.17.1
 
 ## Setup
 
@@ -44,7 +43,7 @@ This repository contains a Dockerfile to build a container with the task service
 
 To run the container, use the following command:
 
-    docker run -p 3000:3000 task-service
+     docker run --rm --detach --name task-service --port 3000:3000 --volume ${PWD}/tasks.json:/etc/task-service/tasks.json:ro --volume ${PWD}/localhost.key:/usr/local/lib/task-service/localhost.key:ro --volume ${PWD}/localhost.crt:/usr/local/lib/task-service/localhost.crt:ro task-service
 
 The container will be available on port 3000.
 

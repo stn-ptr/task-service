@@ -1,13 +1,13 @@
 FROM node:22.17.1-alpine
 
-WORKDIR /opt/task/srv
+WORKDIR /usr/local/lib/task-service
 
-COPY package.json package-lock.json /opt/task/srv/
+COPY package.json package-lock.json /usr/local/lib/task-service/
 RUN npm install
 
-COPY index.js /opt/task/srv
-COPY app /opt/task/srv/app
-COPY task /opt/task/srv/task
-COPY persistence /opt/task/srv/persistence 
+COPY index.js ./
+COPY app/ ./app/
+COPY task/ ./task/
+COPY persistence/ ./persistence/
 
-CMD ["node", "/opt/task/srv/index.js", "--ConfigurationFile=/opt/task/srv/tasks.json"]
+CMD ["node", "/usr/local/lib/task-service/index.js", "--ConfigurationFile=/etc/task-service/tasks.json"]
