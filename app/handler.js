@@ -8,20 +8,22 @@ function postTask(req, res) {
     return;
   }
 
-  let body = "";
+    const userId = authentication.id;
+
+    let body = "";
 
   req.on("data", (chunk) => {
     body += chunk.toString();
   });
 
-  req.on("end", () => {
-    try {
-      const requestBody = JSON.parse(body);
-      task.create(requestBody.title, (task, err) => {
-        if (err) {
-          res.writeHead(500, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: String(err) }));
-        }
+    req.on("end", () => {
+        try {
+            const requestBody = JSON.parse(body);
+            task.create(requestBody.title, userId, (task, err) => {
+                if (err) {
+                    res.writeHead(500, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({error: String(err)}));
+                }
 
         res.writeHead(201, { "Content-Type": "application/json" });
         res.end(JSON.stringify(task));
@@ -40,13 +42,14 @@ function getTask(req, res) {
     return;
   }
 
-  const id = req.url.split("/").pop();
-  task.get(id, (task, err) => {
-    if (err) {
-      res.writeHead(404, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Task not found" }));
-      return;
-    }
+    const taskId = req.url.split("/").pop();
+    const userId = authentication.id;
+    task.get(taskId, userId, (task, err) => {
+        if (err) {
+            res.writeHead(404, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: "Task not found" }));
+            return;
+        }
 
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(task));
@@ -54,19 +57,19 @@ function getTask(req, res) {
 }
 
 function deleteTask(req, res) {
-  const authentication = authenticate(req);
-  if (!authentication) {
-    sendAccessDenied(res);
-    return;
-  }
-
-  const id = req.url.split("/").pop();
-  task.remove(id, (task, err) => {
-    if (err) {
-      res.writeHead(404, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Task not found" }));
-      return;
+    const authentication = authenticate(req);       
+    if (!authentication) {
+        sendAccessDenied(res);
+        return;
     }
+    const id = req.url.split("/").pop();
+    const userId = authentication.id;
+    task.remove(id, userId, (task, err) => {
+        if (err) {
+            res.writeHead(404, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: "Task not found" }));
+            return;
+        }
 
     res.writeHead(200);
     res.end(JSON.stringify(task));
@@ -80,22 +83,24 @@ function updateTask(req, res) {
     return;
   }
 
-  const id = req.url.split("/").pop();
-  let body = "";
+    const userId = authentication.id;
+
+    const id = req.url.split("/").pop();
+    let body = "";
 
   req.on("data", (chunk) => {
     body += chunk.toString();
   });
 
-  req.on("end", () => {
-    try {
-      const requestBody = JSON.parse(body);
-      task.update(id, requestBody.title, requestBody.done, (task, err) => {
-        if (err) {
-          res.writeHead(500, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: String(err) }));
-          return;
-        }
+    req.on("end", () => {
+        try {
+            const requestBody = JSON.parse(body);
+            task.update(id, userId, requestBody.title, requestBody.done, (task, err) => {
+                if (err) {
+                    res.writeHead(500, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ error: String(err) }));
+                    return;
+                }
 
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify(task));
@@ -108,18 +113,18 @@ function updateTask(req, res) {
 }
 
 function getAllTasks(req, res) {
-  const authentication = authenticate(req);
-  if (!authentication) {
-    sendAccessDenied(res);
-    return;
-  }
-
-  task.getAll((tasks, err) => {
-    if (err) {
-      res.writeHead(500, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: String(err) }));
-      return;
+    const authentication = authenticate(req);
+    if (!authentication) {
+        sendAccessDenied(res);
+        return;
     }
+    const userId = authentication.id;
+    task.getAll(userId, (tasks, err) => {
+        if (err) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: String(err) }));
+            return;
+        }
 
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(tasks));

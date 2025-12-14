@@ -1,46 +1,53 @@
 const fs = require("node:fs");
 
-const defaultDataDir = "./data/task/";
 const extension = ".json";
+const defaultDataDir = "./data/";
+const defaultUsersDir = `${defaultDataDir}users/`;
+const taskDir = (userId) => `${defaultUsersDir}${userId}/tasks/`
+const taskFile = (taskId, userId) => `${taskDir(userId)}${taskId}${extension}`;
 
 let dataLocation = defaultDataDir;
 
-function setup(dataDir) {
+function setup() {
   dataLocation = dataDir ? dataDir : defaultDataDir;
   fs.mkdirSync(dataLocation, { recursive: true });
 }
 
-function save(task, callback) {
+function save(task, userId, callback) {
   fs.writeFile(
-    dataLocation + task.id + extension,
+    taskFile(task.id, userId),
     JSON.stringify(task, null, 2),
     task,
     (err) => callback(task, err),
   );
 }
 
-function load(id, callback) {
-  fs.readFile(dataLocation + id + extension, "utf8", (err, data) => {
-    if (err) {
-      return callback(null, err);
+function load(taskId, userId, callback) {
+  fs.readFile(
+    taskFile(taskId, userId),
+    "utf8",
+    (err, data) => {
+      if (err) {
+        return callback(null, err);
+      }
+      try {
+        const task = JSON.parse(data);
+        callback(task, null);
+      } catch (parseError) {
+        callback(null, parseError);
+      }
     }
-    try {
-      const task = JSON.parse(data);
-      callback(task, null);
-    } catch (parseError) {
-      callback(null, parseError);
-    }
-  });
+  );
 }
 
-function remove(id, callback) {
-  fs.unlink(dataLocation + id + extension, (err) => {
-    callback(err);
-  });
+function remove(taskId, userId, callback) {
+    fs.unlink(taskFile(taskId, userId), err => {
+      callback(err);
+    });
 }
 
-function list(callback) {
-  fs.readdir(dataLocation, (err, files) => {
+function list(userId, callback) {
+  fs.readdir(taskDir(userId), (err, files) => {
     if (err) {
       return callback(null, err);
     }

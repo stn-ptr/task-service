@@ -17,22 +17,24 @@ function authenticate(req, config) {
       return null;
     }
 
-    const [username, password] = parts;
-
-    if (validateCredentials(username, password, config)) {
-      return {
-        username,
-        authMethod: "basic",
-        authenticated: true,
-      };
+      const [username, password] = parts;
+      
+      if (validateCredentials(username, password, config)) {
+        const id = config.users[username].id;
+        return {
+          id,
+          username,
+          authMethod: "basic",
+          authenticated: true
+        };
+      }
+      
+      return null;
+    } catch (error) {
+      console.warn("Basic Auth parsing error:", error.message);
+      return null;
     }
-
-    return null;
-  } catch (error) {
-    console.warn("Basic Auth parsing error:", error.message);
-    return null;
   }
-}
 
 function validateCredentials(username, password, config) {
   const users = config && config.users;
