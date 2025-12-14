@@ -43,16 +43,35 @@ This repository contains a Dockerfile to build a container with the task service
 
 To run the container, use the following command:
 
-     docker run 
-        --rm
-        --detach
-        --name task-service
-        --publish 3000:3000
-        --volume tasks:/usr/local/lib/task-service/data
-        --volume ${PWD}/tasks.json:/etc/task-service/tasks.json:ro
-        --volume ${PWD}/localhost.key:/usr/local/lib/task-service/localhost.key:ro
-        --volume ${PWD}/localhost.crt:/usr/local/lib/task-service/localhost.crt:ro
-        task-service
+In Bash
+
+```bash
+docker run \
+    --rm \
+    --detach \
+    --name task-service \
+    --publish 3000:3000 \
+    --volume tasks:/usr/local/lib/task-service/data \
+    --volume ${PWD}/tasks.json:/etc/task-service/tasks.json:ro \
+    --volume ${PWD}/localhost.key:/usr/local/lib/task-service/localhost.key:ro \
+    --volume ${PWD}/localhost.crt:/usr/local/lib/task-service/localhost.crt:ro \
+    task-service
+```
+
+In PowerShell
+
+```powershell
+docker run `
+    --rm `
+    --detach `
+    --name task-service `
+    --publish 3000:3000 `
+    --volume tasks:/usr/local/lib/task-service/data `
+    --volume ${PWD}/tasks.json:/etc/task-service/tasks.json:ro `
+    --volume ${PWD}/localhost.key:/usr/local/lib/task-service/localhost.key:ro `
+    --volume ${PWD}/localhost.crt:/usr/local/lib/task-service/localhost.crt:ro `
+    task-service
+```
 
 The container will be available on port 3000.
 
