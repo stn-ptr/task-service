@@ -43,13 +43,24 @@ This repository contains a Dockerfile to build a container with the task service
 
 To run the container, use the following command:
 
-     docker run --rm --detach --name task-service --port 3000:3000 --volume ${PWD}/tasks.json:/etc/task-service/tasks.json:ro --volume ${PWD}/localhost.key:/usr/local/lib/task-service/localhost.key:ro --volume ${PWD}/localhost.crt:/usr/local/lib/task-service/localhost.crt:ro task-service
+     docker run 
+        --rm
+        --detach
+        --name task-service
+        --publish 3000:3000
+        --volume tasks:/usr/local/lib/task-service/data
+        --volume ${PWD}/tasks.json:/etc/task-service/tasks.json:ro
+        --volume ${PWD}/localhost.key:/usr/local/lib/task-service/localhost.key:ro
+        --volume ${PWD}/localhost.crt:/usr/local/lib/task-service/localhost.crt:ro
+        task-service
 
 The container will be available on port 3000.
 
 ## Features
 
 - Supports HTTPS
+- Authentication
+  - Basic
 - Not much more yet 😃
 
 ## Testing
@@ -98,5 +109,5 @@ Invoke-WebRequest "http://localhost:3000/task/99e587e6-6550-4601-9e2a-d40d2a2dce
 Delete a task
 
 ```powershell
-Invoke-WebRequest "http://localhost:1337/task/99e587e6-6550-4601-9e2a-d40d2a2dce7b" -Credential $credential -AllowUnencryptedAuthentication -Method Delete
+Invoke-WebRequest "http://localhost:3000/task/99e587e6-6550-4601-9e2a-d40d2a2dce7b" -Credential $credential -AllowUnencryptedAuthentication -Method Delete
 ```
