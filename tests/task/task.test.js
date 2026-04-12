@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert");
-const { create } = require("./task.js");
+const { create } = require("#app/task/task");
 
 test("create function should generate a task object", () => {
   assert.strictEqual(typeof create, "function", "create should be a function");
@@ -9,7 +9,7 @@ test("create function should generate a task object", () => {
 
 test("task object should have required properties", () => {
   const title = "Test task description";
-  const task = create(title, (task, err) => {
+  create(title, (task, err) => {
     assert.equal(err, undefined, "No error should occur during task creation");
     assert.ok(task.id, "Task should have an id");
     assert.strictEqual(
@@ -39,7 +39,7 @@ test("task should be persisted to file", () => {
   const path = require("node:path");
 
   const title = "Test task for persistence";
-  create(title, async (task, err) =>{
+  create(title, async (task) =>{
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const filePath = path.join(".", "data", "task", task.id + ".json");
@@ -88,7 +88,7 @@ test("task should be read from file", () => {
   const path = require("node:path");
 
   const title = "Test task for reading";
-  create(title, async (task, err) => {
+  create(title, async (task) => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const filePath = path.join(".", "data", "task", task.id + ".json");
@@ -131,7 +131,7 @@ test("task should be read from file", () => {
 });
 
 test("update should call the callback with the updated task", async () => {
-  const { update } = require("./task.js");
+  const { update } = require("#app/task/task");
   const fs = require("node:fs/promises");
   const path = require("node:path");
 
@@ -197,7 +197,7 @@ test("update should call the callback with the updated task", async () => {
             }
           } else if (testCase.done === false) {
             // done ist explizit false -> done Feld sollte nicht vorhanden sein
-            assert.strictEqual(updatedTask.hasOwnProperty('done'), false,
+            assert.strictEqual(Object.hasOwn(updatedTask, 'done'), false,
               `Done field should not exist when set to false for: ${testCase.description}`);
           } else if (testCase.done === undefined) {
             // done nicht angegeben -> bestehender Zustand beibehalten
@@ -205,7 +205,7 @@ test("update should call the callback with the updated task", async () => {
               assert.strictEqual(updatedTask.done, testCase.start.done,
                 `Existing done state should be preserved when not specified for: ${testCase.description}`);
             } else {
-              assert.strictEqual(updatedTask.hasOwnProperty('done'), false,
+              assert.strictEqual(Object.hasOwn(updatedTask, 'done'), false,
                 `Done field should remain absent when not specified for: ${testCase.description}`);
             }
           }
@@ -221,7 +221,7 @@ test("update should call the callback with the updated task", async () => {
     // Cleanup
     try {
       await fs.unlink(filePath);
-    } catch (cleanupError) {
+    } catch {
       // Ignoriere cleanup errors
     }
   }

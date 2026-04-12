@@ -19,11 +19,11 @@ function get(id, callback) {
       return callback(null, err);
     }
 
-    publicTask = {
+    const publicTask = {
       id: task.id,
       title: task.title,
-      done: task.done ? true: false,
-    }
+      done: task.done ? true : false,
+    };
 
     callback(publicTask, null);
   });
