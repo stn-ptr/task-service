@@ -9,17 +9,17 @@ test("create function should generate a task object", () => {
 
 test("task object should have required properties", (t, done) => {
   const title = "Test task description";
-  create(title, "test-user", (task, err) => {
-    try {
-      assert.equal(err, undefined, "No error should occur during task creation");
-      assert.ok(task.id, "Task should have an id");
-      assert.strictEqual(
-        task.title,
-        title,
-        "Task should have the correct description",
-      );
-      assert.ok(task.created, "Task should have a created timestamp");
-      assert.ok(task.modified, "Task should have a modified timestamp");
+  const userId = "test-user";
+  create(title, userId, (task, err) => {
+    assert.equal(err, undefined, "No error should occur during task creation");
+    assert.ok(task.id, "Task should have an id");
+    assert.strictEqual(
+      task.title,
+      title,
+      "Task should have the correct description",
+    );
+    assert.ok(task.created, "Task should have a created timestamp");
+    assert.ok(task.modified, "Task should have a modified timestamp");
 
       const uuidRegex =
         /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -33,9 +33,6 @@ test("task object should have required properties", (t, done) => {
 
       console.log("✓ Task created successfully:", task);
       done();
-    } catch (e) {
-      done(e);
-    }
   });
 });
 
@@ -44,11 +41,16 @@ test("task should be persisted to file", (t, done) => {
   const path = require("node:path");
 
   const title = "Test task for persistence";
-  create(title, "test-user", async (task) => {
-    const filePath = path.join(__dirname, "../../data/users/test-user/tasks", `${task.id}.json`);
+  const userId = "test-user";
+  const userDir = path.join(".", "data", "users", userId, "tasks");
+
+  create(title, userId, async (task, err) => {
+    if (err) return done(err);
+
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     try {
+      const filePath = path.join(userDir, task.id + ".json");
       const fileContent = await fs.readFile(filePath, "utf8");
       const savedTask = JSON.parse(fileContent);
 
@@ -89,11 +91,16 @@ test("task should be read from file", (t, done) => {
   const path = require("node:path");
 
   const title = "Test task for reading";
-  create(title, "test-user", async (task) => {
-    const filePath = path.join(__dirname, "../../data/users/test-user/tasks", `${task.id}.json`);
+  const userId = "test-user";
+  const userDir = path.join(".", "data", "users", userId, "tasks");
+
+  create(title, userId, async (task, err) => {
+    if (err) return done(err);
+
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     try {
+      const filePath = path.join(userDir, task.id + ".json");
       const fileContent = await fs.readFile(filePath, "utf8");
       const savedTask = JSON.parse(fileContent);
 
@@ -256,7 +263,7 @@ test("update should call the callback with the updated task", async () => {
         } catch (assertError) {
           reject(assertError);
         }
-        
+
       }); // update callback
     }); // Promise
 
