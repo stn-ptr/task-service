@@ -14,12 +14,17 @@ function setup() {
 }
 
 function save(task, userId, callback) {
-  fs.writeFile(
-    taskFile(task.id, userId),
-    JSON.stringify(task, null, 2),
-    task,
-    (err) => callback(task, err),
-  );
+  const dir = taskDir(userId);
+  fs.mkdir(dir, { recursive: true }, (mkdirErr) => {
+    if (mkdirErr) {
+      return callback(null, mkdirErr);
+    }
+    fs.writeFile(
+      taskFile(task.id, userId),
+      JSON.stringify(task, null, 2),
+      (err) => callback(task, err)
+    );
+  });
 }
 
 function load(taskId, userId, callback) {
@@ -47,8 +52,12 @@ function remove(taskId, userId, callback) {
 }
 
 function list(userId, callback) {
-  fs.readdir(taskDir(userId), (err, files) => {
+  const dir = taskDir(userId);
+  fs.readdir(dir, (err, files) => {
     if (err) {
+      if (err.code === "ENOENT") {
+        return callback([], null);
+      }
       return callback(null, err);
     }
     const tasks = [];

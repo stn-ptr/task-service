@@ -7,42 +7,46 @@ test("create function should generate a task object", () => {
   console.log("✓ create is a function");
 });
 
-test("task object should have required properties", () => {
+test("task object should have required properties", (t, done) => {
   const title = "Test task description";
-  create(title, (task, err) => {
-    assert.equal(err, undefined, "No error should occur during task creation");
-    assert.ok(task.id, "Task should have an id");
-    assert.strictEqual(
-      task.title,
-      title,
-      "Task should have the correct description",
-    );
-    assert.ok(task.created, "Task should have a created timestamp");
-    assert.ok(task.modified, "Task should have a modified timestamp");
+  create(title, "test-user", (task, err) => {
+    try {
+      assert.equal(err, undefined, "No error should occur during task creation");
+      assert.ok(task.id, "Task should have an id");
+      assert.strictEqual(
+        task.title,
+        title,
+        "Task should have the correct description",
+      );
+      assert.ok(task.created, "Task should have a created timestamp");
+      assert.ok(task.modified, "Task should have a modified timestamp");
 
-    const uuidRegex =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    assert.ok(uuidRegex.test(task.id), "Task id should be a valid UUID");
+      const uuidRegex =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      assert.ok(uuidRegex.test(task.id), "Task id should be a valid UUID");
 
-    assert.strictEqual(
-      typeof task.created,
-      "number",
-      "Created should be a number (timestamp)",
-    );
+      assert.strictEqual(
+        typeof task.created,
+        "number",
+        "Created should be a number (timestamp)",
+      );
 
-    console.log("✓ Task created successfully:", task);
+      console.log("✓ Task created successfully:", task);
+      done();
+    } catch (e) {
+      done(e);
+    }
   });
 });
 
-test("task should be persisted to file", () => {
+test("task should be persisted to file", (t, done) => {
   const fs = require("node:fs/promises");
   const path = require("node:path");
 
   const title = "Test task for persistence";
-  create(title, async (task) => {
+  create(title, "test-user", async (task) => {
+    const filePath = path.join(__dirname, "../../data/users/test-user/tasks", `${task.id}.json`);
     await new Promise((resolve) => setTimeout(resolve, 100));
-
-    const filePath = path.join(".", "data", "task", task.id + ".json");
 
     try {
       const fileContent = await fs.readFile(filePath, "utf8");
@@ -73,23 +77,21 @@ test("task should be persisted to file", () => {
 
       await fs.unlink(filePath);
       console.log("✓ Test file cleaned up");
+      done();
     } catch (error) {
-      assert.fail(
-        "Failed to read or parse the persisted task file: " + error.message,
-      );
+      done(error);
     }
   });
 });
 
-test("task should be read from file", () => {
+test("task should be read from file", (t, done) => {
   const fs = require("node:fs/promises");
   const path = require("node:path");
 
   const title = "Test task for reading";
-  create(title, async (task) => {
+  create(title, "test-user", async (task) => {
+    const filePath = path.join(__dirname, "../../data/users/test-user/tasks", `${task.id}.json`);
     await new Promise((resolve) => setTimeout(resolve, 100));
-
-    const filePath = path.join(".", "data", "task", task.id + ".json");
 
     try {
       const fileContent = await fs.readFile(filePath, "utf8");
@@ -120,10 +122,9 @@ test("task should be read from file", () => {
 
       await fs.unlink(filePath);
       console.log("✓ Test file cleaned up");
+      done();
     } catch (error) {
-      assert.fail(
-        "Failed to read or parse the persisted task file: " + error.message,
-      );
+      done(error);
     }
   });
 });
@@ -182,38 +183,21 @@ test("update should call the callback with the updated task", async () => {
     console.log(`\n--- Test Case ${i + 1}: ${testCase.description} ---`);
 
     // Setup: Erstelle initial task basierend auf start-Zustand
-    const filePath = path.join(
-      ".",
-      "data",
-      "task",
-      testCase.start.id + ".json",
-    );
+    const userDir = path.join(".", "data", "users", "test-user", "tasks");
+    await fs.mkdir(userDir, { recursive: true });
+    const filePath = path.join(userDir, testCase.start.id + ".json");
     await fs.writeFile(filePath, JSON.stringify(testCase.start, null, 2));
 
     // Test: Update mit den gewünschten Parametern
     await new Promise((resolve, reject) => {
-      update(
-        testCase.start.id,
-        testCase.title,
-        testCase.done,
-        (updatedTask, err) => {
-          try {
-            assert.equal(
-              err,
-              null,
-              `No error should occur during update: ${testCase.description}`,
-            );
-
-            // Prüfe title
-            const expectedTitle =
-              testCase.title !== undefined
-                ? testCase.title
-                : testCase.start.title;
-            assert.strictEqual(
-              updatedTask.title,
-              expectedTitle,
-              `Title should be correct for: ${testCase.description}`,
-            );
+      update(testCase.start.id, "test-user", testCase.title, testCase.done, (updatedTask, err) => {
+        try {
+          assert.equal(err, null, `No error should occur during update: ${testCase.description}`);
+          
+          // Prüfe title
+          const expectedTitle = testCase.title !== undefined ? testCase.title : testCase.start.title;
+          assert.strictEqual(updatedTask.title, expectedTitle, 
+            `Title should be correct for: ${testCase.description}`);
 
             // Prüfe done Logik
             if (testCase.done) {
@@ -269,12 +253,12 @@ test("update should call the callback with the updated task", async () => {
 
             console.log(`✓ Case ${i + 1} passed:`, updatedTask);
             resolve();
-          } catch (assertError) {
-            reject(assertError);
-          }
-        },
-      );
-    });
+        } catch (assertError) {
+          reject(assertError);
+        }
+        
+      }); // update callback
+    }); // Promise
 
     // Cleanup
     try {
