@@ -5,7 +5,7 @@ const { getConfig, setup } = require("./config.js");
 const { app } = require("./app.js");
 
 const config = getConfig();
-setup();
+setup(config.data);
 
 let httpOptions, server;
 if (config !== undefined && config["HttpsOptions"] !== undefined) {
