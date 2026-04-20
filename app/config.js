@@ -40,7 +40,14 @@ function getConfig() {
 }
 
 function setup(dataDir) {
-  persistence.setup(dataDir);
+  const process = require("node:process");
+  try {
+    persistence.setup(dataDir);
+  }
+  catch (e) {
+    console.error("Failed to initialize persistence: ", String(e))
+    process.exit(1);
+  }
 }
 
 exports.setup = setup;
