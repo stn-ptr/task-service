@@ -39,7 +39,7 @@ test("task should be persisted to file", () => {
   const path = require("node:path");
 
   const title = "Test task for persistence";
-  create(title, async (task) =>{
+  create(title, async (task) => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     const filePath = path.join(".", "data", "task", task.id + ".json");
@@ -78,9 +78,7 @@ test("task should be persisted to file", () => {
         "Failed to read or parse the persisted task file: " + error.message,
       );
     }
-
   });
-
 });
 
 test("task should be read from file", () => {
@@ -150,13 +148,33 @@ test("update should call the callback with the updated task", async () => {
     { start: init, title: "updated title", description: "update title only 0" },
     { start: init, done: false, description: "update nothing" },
     { start: init, done: true, description: "update done with timestamp" },
-    { start: init, title: "updated title", done: true , description: "update title and done" },
-    { start: init, title: "updated title", done: false, description: "update title only 1" },
-    { start: full, title: "updated title", description: "update title only 2"},
+    {
+      start: init,
+      title: "updated title",
+      done: true,
+      description: "update title and done",
+    },
+    {
+      start: init,
+      title: "updated title",
+      done: false,
+      description: "update title only 1",
+    },
+    { start: full, title: "updated title", description: "update title only 2" },
     { start: full, done: false, description: "unset done" },
     { start: full, done: true, description: "update nothing" },
-    { start: full, title: "updated title", done: true, description: "update title only 3" },
-    { start: full, title: "updated title", done: false, description: "update title and unset done" },
+    {
+      start: full,
+      title: "updated title",
+      done: true,
+      description: "update title only 3",
+    },
+    {
+      start: full,
+      title: "updated title",
+      done: false,
+      description: "update title and unset done",
+    },
   ];
 
   for (let i = 0; i < cases.length; i++) {
@@ -164,58 +182,98 @@ test("update should call the callback with the updated task", async () => {
     console.log(`\n--- Test Case ${i + 1}: ${testCase.description} ---`);
 
     // Setup: Erstelle initial task basierend auf start-Zustand
-    const filePath = path.join(".", "data", "task", testCase.start.id + ".json");
+    const filePath = path.join(
+      ".",
+      "data",
+      "task",
+      testCase.start.id + ".json",
+    );
     await fs.writeFile(filePath, JSON.stringify(testCase.start, null, 2));
 
     // Test: Update mit den gewünschten Parametern
     await new Promise((resolve, reject) => {
-      update(testCase.start.id, testCase.title, testCase.done, (updatedTask, err) => {
-        try {
-          assert.equal(err, null, `No error should occur during update: ${testCase.description}`);
-          
-          // Prüfe title
-          const expectedTitle = testCase.title !== undefined ? testCase.title : testCase.start.title;
-          assert.strictEqual(updatedTask.title, expectedTitle, 
-            `Title should be correct for: ${testCase.description}`);
+      update(
+        testCase.start.id,
+        testCase.title,
+        testCase.done,
+        (updatedTask, err) => {
+          try {
+            assert.equal(
+              err,
+              null,
+              `No error should occur during update: ${testCase.description}`,
+            );
 
-          // Prüfe done Logik
-          if (testCase.done) {
-            // done ist truthy -> timestamp sollte vorhanden sein
-            assert.ok(updatedTask.done, `Done timestamp should exist for: ${testCase.description}`);
-            assert.strictEqual(typeof updatedTask.done, "number", 
-              `Done should be a timestamp for: ${testCase.description}`);
-            
-            // Wenn bereits ein timestamp vorhanden war, sollte er erhalten bleiben
-            if (testCase.start.done) {
-              assert.strictEqual(updatedTask.done, testCase.start.done,
-                `Existing done timestamp should be preserved for: ${testCase.description}`);
-            } else {
-              // Neuer timestamp sollte aktuell sein (innerhalb der letzten Sekunde)
-              const now = Date.now();
-              assert.ok(updatedTask.done <= now && updatedTask.done >= now - 1000,
-                `New done timestamp should be current for: ${testCase.description}`);
+            // Prüfe title
+            const expectedTitle =
+              testCase.title !== undefined
+                ? testCase.title
+                : testCase.start.title;
+            assert.strictEqual(
+              updatedTask.title,
+              expectedTitle,
+              `Title should be correct for: ${testCase.description}`,
+            );
+
+            // Prüfe done Logik
+            if (testCase.done) {
+              // done ist truthy -> timestamp sollte vorhanden sein
+              assert.ok(
+                updatedTask.done,
+                `Done timestamp should exist for: ${testCase.description}`,
+              );
+              assert.strictEqual(
+                typeof updatedTask.done,
+                "number",
+                `Done should be a timestamp for: ${testCase.description}`,
+              );
+
+              // Wenn bereits ein timestamp vorhanden war, sollte er erhalten bleiben
+              if (testCase.start.done) {
+                assert.strictEqual(
+                  updatedTask.done,
+                  testCase.start.done,
+                  `Existing done timestamp should be preserved for: ${testCase.description}`,
+                );
+              } else {
+                // Neuer timestamp sollte aktuell sein (innerhalb der letzten Sekunde)
+                const now = Date.now();
+                assert.ok(
+                  updatedTask.done <= now && updatedTask.done >= now - 1000,
+                  `New done timestamp should be current for: ${testCase.description}`,
+                );
+              }
+            } else if (testCase.done === false) {
+              // done ist explizit false -> done Feld sollte nicht vorhanden sein
+              assert.strictEqual(
+                Object.hasOwn(updatedTask, "done"),
+                false,
+                `Done field should not exist when set to false for: ${testCase.description}`,
+              );
+            } else if (testCase.done === undefined) {
+              // done nicht angegeben -> bestehender Zustand beibehalten
+              if (testCase.start.done) {
+                assert.strictEqual(
+                  updatedTask.done,
+                  testCase.start.done,
+                  `Existing done state should be preserved when not specified for: ${testCase.description}`,
+                );
+              } else {
+                assert.strictEqual(
+                  Object.hasOwn(updatedTask, "done"),
+                  false,
+                  `Done field should remain absent when not specified for: ${testCase.description}`,
+                );
+              }
             }
-          } else if (testCase.done === false) {
-            // done ist explizit false -> done Feld sollte nicht vorhanden sein
-            assert.strictEqual(Object.hasOwn(updatedTask, 'done'), false,
-              `Done field should not exist when set to false for: ${testCase.description}`);
-          } else if (testCase.done === undefined) {
-            // done nicht angegeben -> bestehender Zustand beibehalten
-            if (testCase.start.done) {
-              assert.strictEqual(updatedTask.done, testCase.start.done,
-                `Existing done state should be preserved when not specified for: ${testCase.description}`);
-            } else {
-              assert.strictEqual(Object.hasOwn(updatedTask, 'done'), false,
-                `Done field should remain absent when not specified for: ${testCase.description}`);
-            }
+
+            console.log(`✓ Case ${i + 1} passed:`, updatedTask);
+            resolve();
+          } catch (assertError) {
+            reject(assertError);
           }
-
-          console.log(`✓ Case ${i + 1} passed:`, updatedTask);
-          resolve();
-        } catch (assertError) {
-          reject(assertError);
-        }
-      });
+        },
+      );
     });
 
     // Cleanup

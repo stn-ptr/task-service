@@ -17,5 +17,5 @@ function legacyAuthenticate(req) {
 }
 
 module.exports = {
-  legacyAuthenticate // Für Rückwärtskompatibilität
+  legacyAuthenticate, // Für Rückwärtskompatibilität
 };

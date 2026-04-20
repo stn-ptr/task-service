@@ -2,8 +2,5 @@
   "version": "1",
   "name": "task",
   "type": "collection",
-  "ignore": [
-    "node_modules",
-    ".git"
-  ]
+  "ignore": ["node_modules", ".git"]
 }

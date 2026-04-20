@@ -96,7 +96,6 @@ node --test "**/*.test.js"
 
 Credentials are stored in a SecureString, I create one per session interactively with Get-Credential.
 
-
 ```powershell
 $credential = Get-Credential
 ```
@@ -107,11 +106,11 @@ Create a minimal new task
 Invoke-WebRequest "http://localhost:3000/task" -Credential $credential -AllowUnencryptedAuthentication -Method Post -Body '{"title": "New Task"}'
 ```
 
- Get all tasks
+Get all tasks
 
- ```powershell
- Invoke-WebRequest "http://localhost:3000/task" -Credential $credential -AllowUnencryptedAuthentication
- ```
+```powershell
+Invoke-WebRequest "http://localhost:3000/task" -Credential $credential -AllowUnencryptedAuthentication
+```
 
 Get a task
 
@@ -122,7 +121,7 @@ Invoke-WebRequest "http://localhost:3000/task/99e587e6-6550-4601-9e2a-d40d2a2dce
 Update a task
 
 ```powershell
-Invoke-WebRequest "http://localhost:3000/task/99e587e6-6550-4601-9e2a-d40d2a2dce7b" -Credential $credential -AllowUnencryptedAuthentication -Method Put -Body '{"done": true}' 
+Invoke-WebRequest "http://localhost:3000/task/99e587e6-6550-4601-9e2a-d40d2a2dce7b" -Credential $credential -AllowUnencryptedAuthentication -Method Put -Body '{"done": true}'
 ```
 
 Delete a task

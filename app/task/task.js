@@ -31,7 +31,7 @@ function get(id, callback) {
 
 function remove(id, callback) {
   persistence.load(id, (task, err) => {
-    if (err) {  
+    if (err) {
       return callback(null, err);
     }
 
@@ -45,7 +45,7 @@ function remove(id, callback) {
 }
 
 function update(id, title, done, callback) {
-  persistence.load(id, (task, err) => { 
+  persistence.load(id, (task, err) => {
     if (err) {
       return callback(null, err);
     }
@@ -57,7 +57,7 @@ function update(id, title, done, callback) {
     }
 
     if (done !== undefined) {
-      if (done === true ) {
+      if (done === true) {
         if (task.done === undefined) {
           task.done = timestamp;
         }

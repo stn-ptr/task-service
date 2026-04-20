@@ -1,4 +1,4 @@
-const { getConfig } = require("../config.js")
+const { getConfig } = require("../config.js");
 const { createStrategy } = require("./authStrategies.js");
 
 /**
@@ -7,7 +7,7 @@ const { createStrategy } = require("./authStrategies.js");
  * @returns {Object|null} user object or null
  */
 function authenticate(req) {
-  const config = getConfig()
+  const config = getConfig();
   const strategies = setupStrategies(config);
   for (const strategy of strategies) {
     try {
@@ -25,11 +25,11 @@ function authenticate(req) {
 }
 
 function setupStrategies(config) {
-  const strategies = []
-  const authConfig = config?.authentication || {};    
+  const strategies = [];
+  const authConfig = config?.authentication || {};
   const methods = authConfig.methods || ["basic"];
-    
-  methods.forEach(methodConfig => {
+
+  methods.forEach((methodConfig) => {
     try {
       let strategy;
 
@@ -50,7 +50,9 @@ function setupStrategies(config) {
   });
 
   if (strategies.length === 0) {
-    console.warn("no authentication method configured - all requests will be denied!");
+    console.warn(
+      "no authentication method configured - all requests will be denied!",
+    );
   }
   return strategies;
 }
