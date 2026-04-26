@@ -3,7 +3,7 @@ const fs = require("node:fs");
 const extension = ".json";
 const defaultDataDir = "./data/";
 const defaultUsersDir = `${defaultDataDir}users/`;
-const taskDir = (userId) => `${defaultUsersDir}${userId}/tasks/`
+const taskDir = (userId) => `${defaultUsersDir}${userId}/`
 const taskFile = (taskId, userId) => `${taskDir(userId)}${taskId}${extension}`;
 
 let dataLocation = defaultDataDir;
