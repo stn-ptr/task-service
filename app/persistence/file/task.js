@@ -1,7 +1,10 @@
 const fs = require("node:fs");
 
-const defaultDataDir = "./data/task/";
 const extension = ".json";
+const defaultDataDir = "./data/";
+const defaultUsersDir = `${defaultDataDir}users/`;
+const taskDir = (userId) => `${defaultUsersDir}${userId}/`
+const taskFile = (taskId, userId) => `${taskDir(userId)}${taskId}${extension}`;
 
 let dataLocation = defaultDataDir;
 
@@ -10,38 +13,51 @@ function setup(dataDir) {
   fs.mkdirSync(dataLocation, { recursive: true });
 }
 
-function save(task, callback) {
-  fs.writeFile(
-    dataLocation + task.id + extension,
-    JSON.stringify(task, null, 2),
-    task,
-    (err) => callback(task, err),
+function save(task, userId, callback) {
+  const dir = taskDir(userId);
+  fs.mkdir(dir, { recursive: true }, (mkdirErr) => {
+    if (mkdirErr) {
+      return callback(null, mkdirErr);
+    }
+    fs.writeFile(
+      taskFile(task.id, userId),
+      JSON.stringify(task, null, 2),
+      (err) => callback(task, err)
+    );
+  });
+}
+
+function load(taskId, userId, callback) {
+  fs.readFile(
+    taskFile(taskId, userId),
+    "utf8",
+    (err, data) => {
+      if (err) {
+        return callback(null, err);
+      }
+      try {
+        const task = JSON.parse(data);
+        callback(task, null);
+      } catch (parseError) {
+        callback(null, parseError);
+      }
+    }
   );
 }
 
-function load(id, callback) {
-  fs.readFile(dataLocation + id + extension, "utf8", (err, data) => {
-    if (err) {
-      return callback(null, err);
-    }
-    try {
-      const task = JSON.parse(data);
-      callback(task, null);
-    } catch (parseError) {
-      callback(null, parseError);
-    }
-  });
+function remove(taskId, userId, callback) {
+    fs.unlink(taskFile(taskId, userId), err => {
+      callback(err);
+    });
 }
 
-function remove(id, callback) {
-  fs.unlink(dataLocation + id + extension, (err) => {
-    callback(err);
-  });
-}
-
-function list(callback) {
-  fs.readdir(dataLocation, (err, files) => {
+function list(userId, callback) {
+  const dir = taskDir(userId);
+  fs.readdir(dir, (err, files) => {
     if (err) {
+      if (err.code === "ENOENT") {
+        return callback([], null);
+      }
       return callback(null, err);
     }
     const tasks = [];

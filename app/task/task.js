@@ -2,7 +2,7 @@ const crypto = require("node:crypto");
 
 const persistence = require("../persistence/file/task");
 
-function create(title, callback) {
+function create(title, userId, callback) {
   const task = {
     id: crypto.randomUUID(),
     title: title,
@@ -10,11 +10,11 @@ function create(title, callback) {
     modified: Date.now(),
   };
 
-  persistence.save(task, (task, err) => callback(task, err));
+  persistence.save(task, userId, (task, err) => callback(task, err));
 }
 
-function get(id, callback) {
-  persistence.load(id, (task, err) => {
+function get(taskId, userId, callback) {
+  persistence.load(taskId, userId, (task, err) => {
     if (err) {
       return callback(null, err);
     }
@@ -29,13 +29,13 @@ function get(id, callback) {
   });
 }
 
-function remove(id, callback) {
-  persistence.load(id, (task, err) => {
-    if (err) {
+function remove(taskId, userId, callback) {
+  persistence.load(taskId, userId, (task, err) => {
+    if (err) {  
       return callback(null, err);
     }
 
-    persistence.remove(id, (err) => {
+    persistence.remove(taskId, userId, (err) => {
       if (err) {
         return callback(null, err);
       }
@@ -44,8 +44,8 @@ function remove(id, callback) {
   });
 }
 
-function update(id, title, done, callback) {
-  persistence.load(id, (task, err) => {
+function update(taskId, userId, title, done, callback) {
+  persistence.load(taskId, userId, (task, err) => {
     if (err) {
       return callback(null, err);
     }
@@ -70,12 +70,12 @@ function update(id, title, done, callback) {
 
     task.modified = timestamp;
 
-    persistence.save(task, (task, err) => callback(task, err));
+    persistence.save(task, userId, (task, err) => callback(task, err));
   });
 }
 
-function getAll(callback) {
-  persistence.list((tasks, err) => {
+function getAll(userId, callback) {
+  persistence.list(userId, (tasks, err) => {
     if (err) {
       callback(null, err);
       return;
