@@ -1,0 +1,167 @@
+openapi: 3.0.3
+info:
+  title: Task Service API
+  description: REST service for a simple task list application
+  version: 1.0.0
+  license:
+    name: AGPL-3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.html
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+paths:
+  /task:
+    get:
+      summary: Get all tasks
+      description: Returns a list of all task IDs.
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: A list of task IDs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/Error'
+    post:
+      summary: Create a new task
+      description: Creates a new task with the given title.
+      security:
+        - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                  example: "New Task"
+      responses:
+        '201':
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/Error'
+  /task/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the task
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get a task by ID
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: The task object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+    put:
+      summary: Update a task
+      description: Updates the title or the completion status of a task.
+      security:
+        - basicAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                done:
+                  type: boolean
+      responses:
+        '200':
+          description: Task updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Task not found
+        '500':
+          $ref: '#/components/responses/Error'
+    delete:
+      summary: Delete a task
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: Task deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Task not found
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        done:
+          type: boolean
+          description: Completion status (true if done, false if not)
+    ErrorModel:
+      type: object
+      properties:
+        error:
+          type: string
+  responses:
+    Unauthorized:
+      description: Access denied
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+            example: 'Basic realm="task-service"'
+    Error:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorModel'
