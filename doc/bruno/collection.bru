@@ -3,6 +3,6 @@ auth {
 }
 
 auth:basic {
-  username: foo
-  password: bar
+  username: {{process.env.BASIC_AUTH_USER}}
+  password: {{process.env.BASIC_AUTH_PASSWORD}}
 }
