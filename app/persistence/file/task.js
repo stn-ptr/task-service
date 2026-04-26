@@ -8,7 +8,7 @@ const taskFile = (taskId, userId) => `${taskDir(userId)}${taskId}${extension}`;
 
 let dataLocation = defaultDataDir;
 
-function setup() {
+function setup(dataDir) {
   dataLocation = dataDir ? dataDir : defaultDataDir;
   fs.mkdirSync(dataLocation, { recursive: true });
 }
