@@ -1,9 +1,10 @@
 FROM node:22.17.1-alpine
 
-RUN mkdir -p /home/app
+WORKDIR /usr/local/lib/task-service
 
-COPY . /home/app
+COPY package.json package-lock.json ./
+RUN npm install --omit=dev
 
-WORKDIR /home/app
+COPY . .
 
-CMD ["node", "/home/app/index.js", "--ConfigurationFile=/home/app/tasks.json"]
+CMD ["node", "/usr/local/lib/task-service/app/index.js", "--ConfigurationFile=/etc/task-service/tasks.json"]

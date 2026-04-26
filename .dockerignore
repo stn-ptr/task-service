@@ -1,0 +1,36 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Version control
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+
+# Documentation
+doc
+README.md
+
+# Tests
+tests
+
+# Configuration
+tasks.json
+
+# Development tools
+eslint.config.mjs
+.prettierrc*
+.prettierignore
+
+# Scripts
+scripts
+
+# Sample files
+*.sample.json
+
+# Docker
+Dockerfile
+.dockerignore

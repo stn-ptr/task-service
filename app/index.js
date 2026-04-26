@@ -1,10 +1,11 @@
 "use strict";
 
 const fs = require("fs");
-const { getConfig } = require("./app/config.js");
-const { app } = require("./app/app.js");
+const { getConfig, setup } = require("./config.js");
+const { app } = require("./app.js");
 
 const config = getConfig();
+setup(config.data);
 
 let httpOptions, server;
 if (config !== undefined && config["HttpsOptions"] !== undefined) {

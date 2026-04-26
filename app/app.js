@@ -3,7 +3,6 @@ const url = require("node:url");
 const handler = require("./handler.js");
 
 function app(req, res) {
-
   const parsedUrl = url.parse(req.url, true);
   const method = req.method;
   const pathname = parsedUrl.pathname;
@@ -14,7 +13,7 @@ function app(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   if (method === "POST" && pathname === "/task") {
-    handler.postTask(req, res)
+    handler.postTask(req, res);
   }
 
   if (method === "GET" && pathname.startsWith("/task/")) {

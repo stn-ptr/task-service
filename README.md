@@ -6,8 +6,7 @@ This is project is meant for learning, practicing and trying out things, not for
 
 ## Requirements
 
-- Node 18.15.0
-- ~~Node 0.10.48 - Ancient, but this version runs on my NAS, which is ancient as well.~~
+- Node 22.17.1
 
 ## Setup
 
@@ -44,13 +43,45 @@ This repository contains a Dockerfile to build a container with the task service
 
 To run the container, use the following command:
 
-    docker run -p 8000:1337 task-service
+In Bash
 
-The container will be available on port 8000.
+```bash
+docker run \
+    --rm \
+    --detach \
+    --name task-service \
+    --publish 3000:3000 \
+    --volume tasks:/var/lib/task-service \
+    --volume ${PWD}/tasks.json:/etc/task-service/tasks.json:ro \
+    --volume ${PWD}/localhost.key:/etc/task-service/certs/localhost.key:ro \
+    --volume ${PWD}/localhost.crt:/etc/task-service/certs/localhost.crt:ro \
+    task-service
+```
+
+In PowerShell
+
+```powershell
+docker run `
+    --rm `
+    --detach `
+    --name task-service `
+    --publish 3000:3000 `
+    --volume tasks:/var/lib/task-service `
+    --volume ${PWD}/tasks.json:/etc/task-service/tasks.json:ro `
+    --volume ${PWD}/localhost.key:/etc/task-service/certs/localhost.key:ro `
+    --volume ${PWD}/localhost.crt:/etc/task-service/certs/localhost.crt:ro `
+    --env TASK_TLS_KEY=/etc/task-service/certs/localhost.key `
+    --env TASK_TLS_CERT=/etc/task-service/certs/localhost.crt `
+    task-service
+```
+
+The container will be available on port 3000.
 
 ## Features
 
 - Supports HTTPS
+- Authentication
+  - Basic
 - Not much more yet 😃
 
 ## Testing
@@ -67,7 +98,6 @@ node --test "**/*.test.js"
 
 Credentials are stored in a SecureString, I create one per session interactively with Get-Credential.
 
-
 ```powershell
 $credential = Get-Credential
 ```
@@ -78,11 +108,11 @@ Create a minimal new task
 Invoke-WebRequest "http://localhost:3000/task" -Credential $credential -AllowUnencryptedAuthentication -Method Post -Body '{"title": "New Task"}'
 ```
 
- Get all tasks
+Get all tasks
 
- ```powershell
- Invoke-WebRequest "http://localhost:3000/task" -Credential $credential -AllowUnencryptedAuthentication
- ```
+```powershell
+Invoke-WebRequest "http://localhost:3000/task" -Credential $credential -AllowUnencryptedAuthentication
+```
 
 Get a task
 
@@ -93,11 +123,11 @@ Invoke-WebRequest "http://localhost:3000/task/99e587e6-6550-4601-9e2a-d40d2a2dce
 Update a task
 
 ```powershell
-Invoke-WebRequest "http://localhost:3000/task/99e587e6-6550-4601-9e2a-d40d2a2dce7b" -Credential $credential -AllowUnencryptedAuthentication -Method Put -Body '{"done": true}' 
+Invoke-WebRequest "http://localhost:3000/task/99e587e6-6550-4601-9e2a-d40d2a2dce7b" -Credential $credential -AllowUnencryptedAuthentication -Method Put -Body '{"done": true}'
 ```
 
 Delete a task
 
 ```powershell
-Invoke-WebRequest "http://localhost:1337/task/99e587e6-6550-4601-9e2a-d40d2a2dce7b" -Credential $credential -AllowUnencryptedAuthentication -Method Delete
+Invoke-WebRequest "http://localhost:3000/task/99e587e6-6550-4601-9e2a-d40d2a2dce7b" -Credential $credential -AllowUnencryptedAuthentication -Method Delete
 ```
