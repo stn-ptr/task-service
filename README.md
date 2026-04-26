@@ -51,10 +51,10 @@ docker run \
     --detach \
     --name task-service \
     --publish 3000:3000 \
-    --volume tasks:/usr/local/lib/task-service/data \
+    --volume tasks:/var/lib/task-service \
     --volume ${PWD}/tasks.json:/etc/task-service/tasks.json:ro \
-    --volume ${PWD}/localhost.key:/usr/local/lib/task-service/localhost.key:ro \
-    --volume ${PWD}/localhost.crt:/usr/local/lib/task-service/localhost.crt:ro \
+    --volume ${PWD}/localhost.key:/etc/task-service/certs/localhost.key:ro \
+    --volume ${PWD}/localhost.crt:/etc/task-service/certs/localhost.crt:ro \
     task-service
 ```
 
@@ -66,10 +66,12 @@ docker run `
     --detach `
     --name task-service `
     --publish 3000:3000 `
-    --volume tasks:/usr/local/lib/task-service/data `
+    --volume tasks:/var/lib/task-service `
     --volume ${PWD}/tasks.json:/etc/task-service/tasks.json:ro `
-    --volume ${PWD}/localhost.key:/usr/local/lib/task-service/localhost.key:ro `
-    --volume ${PWD}/localhost.crt:/usr/local/lib/task-service/localhost.crt:ro `
+    --volume ${PWD}/localhost.key:/etc/task-service/certs/localhost.key:ro `
+    --volume ${PWD}/localhost.crt:/etc/task-service/certs/localhost.crt:ro `
+    --env TASK_TLS_KEY=/etc/task-service/certs/localhost.key `
+    --env TASK_TLS_CERT=/etc/task-service/certs/localhost.crt `
     task-service
 ```
 
