@@ -11,7 +11,7 @@ npm-debug.log*
 .vscode
 
 # Documentation
-docs
+doc
 README.md
 
 # Tests
